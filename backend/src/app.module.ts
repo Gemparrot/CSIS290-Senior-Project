@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { DatabaseModule } from './database/database.module';
 import { AdminModule } from './admin/admin.module';
+import { AmbulanceModule } from './ambulance/ambulance.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AdminModule } from './admin/admin.module';
     }),
     DatabaseModule,
     AdminModule,
+    AmbulanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
