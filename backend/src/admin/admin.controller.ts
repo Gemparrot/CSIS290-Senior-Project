@@ -1,7 +1,6 @@
 import { Controller, Post, Body, UseGuards, Request, Get } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { AdminRegisterDto, AdminLoginDto } from './admin.dto';
-import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 
 @Controller('admin')
 export class AdminController {
@@ -15,12 +14,5 @@ export class AdminController {
   @Post('login')
   async login(@Body() loginDto: AdminLoginDto) {
     return await this.adminService.validateAdminLogin(loginDto);
-  }
-
-  // Example of a protected route
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;  // Accessing user from validated JWT token
   }
 }

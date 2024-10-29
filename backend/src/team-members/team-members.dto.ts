@@ -1,1 +1,8 @@
-// team-members.dto.ts - auto generated file
+// dto/team-member.dto.ts
+import { IsString, IsOptional } from 'class-validator';
+
+export class TeamMemberDto {
+  @IsString()
+  @IsOptional()
+  name?: string;
+}

@@ -7,6 +7,10 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { AdminModule } from './admin/admin.module';
 import { AmbulanceModule } from './ambulance/ambulance.module';
+import { TeamMemberModule } from './team-members/team-members.module';
+import { VehicleCheckupModule } from './vehicle-checkups/vehicle-checkups.module';
+import { MissionModule } from './missions/missions.module';
+
 
 @Module({
   imports: [
@@ -16,6 +20,9 @@ import { AmbulanceModule } from './ambulance/ambulance.module';
     DatabaseModule,
     AdminModule,
     AmbulanceModule,
+    MissionModule,
+    VehicleCheckupModule,
+    TeamMemberModule,
   ],
   controllers: [AppController],
   providers: [AppService],

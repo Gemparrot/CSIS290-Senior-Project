@@ -30,7 +30,7 @@ export class AmbulanceService {
     }
 
     const payload = { id: ambulance.id, vehicle_number: ambulance.vehicle_number };
-    const accessToken = jwt.sign(payload, '"aP1nv$J87nB!K7qXp9&Z8gTb@Hf2Vm#sR%4yLwE"', { expiresIn: '1h' });
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     return { accessToken };
   }
