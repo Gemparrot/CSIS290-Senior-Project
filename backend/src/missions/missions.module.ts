@@ -1,5 +1,3 @@
-// missions.module.ts - auto generated file
-// mission.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MissionService } from './missions.service';

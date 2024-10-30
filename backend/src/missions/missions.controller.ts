@@ -1,5 +1,3 @@
-// missions.controller.ts - auto generated file
-// mission.controller.ts
 import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { MissionService } from './missions.service';
 import { MissionDto } from './missions.dto';
