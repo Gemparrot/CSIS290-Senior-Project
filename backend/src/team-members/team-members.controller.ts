@@ -1,4 +1,3 @@
-// team-member.controller.ts
 import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { TeamMemberService } from './team-members.service';
 import { TeamMemberDto } from './team-members.dto';

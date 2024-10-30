@@ -1,4 +1,3 @@
-// team-member.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeamMemberService } from './team-members.service';
