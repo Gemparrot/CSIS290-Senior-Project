@@ -81,4 +81,12 @@ export class VehicleCheckupService {
     checkup.is_checked = 'unchecked';
     return await this.vehicleCheckupRepository.save(checkup);
   }
+
+  async createCheckup(ambulanceId: number): Promise<VehicleCheckup> {
+    const checkup = new VehicleCheckup();
+    checkup.ambulance = { id: ambulanceId } as Ambulance;
+    checkup.is_checked = 'unchecked';
+    return this.vehicleCheckupRepository.save(checkup);
+  }
+  
 }

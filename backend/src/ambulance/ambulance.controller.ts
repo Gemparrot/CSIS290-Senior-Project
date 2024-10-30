@@ -12,6 +12,9 @@ export class AmbulanceController {
   @Post('create')
   async createAmbulance(@Body() dto: AmbulanceDto, @Req() req: ExpressRequest) {
     const adminId = Number(req.user.id);  
+
+    console.log("Admin ID from request:", adminId);
+
     return this.ambulanceService.createAmbulance(dto, adminId);
   }
 

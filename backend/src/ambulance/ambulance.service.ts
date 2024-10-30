@@ -28,14 +28,15 @@ export class AmbulanceService {
     const ambulance = await this.ambulanceRepository.findOne({
       where: { vehicle_number: dto.vehicle_number },
     });
-
+  
     if (!ambulance || !(await ambulance.comparePassword(dto.password))) {
       throw new UnauthorizedException('Invalid vehicle number or password');
     }
-
-    const payload = { id: ambulance.id, vehicle_number: ambulance.vehicle_number };
+  
+    // Add ambulance ID to the JWT payload
+    const payload = { sub: ambulance.id, vehicle_number: ambulance.vehicle_number };
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+  
     return { accessToken };
   }
 }
