@@ -11,7 +11,7 @@ export class AmbulanceController {
   @UseGuards(JwtAuthGuard)
   @Post('create')
   async createAmbulance(@Body() dto: AmbulanceDto, @Req() req: ExpressRequest) {
-    const adminId = Number(req.user.id);  
+    const adminId = Number(req.user.id);
     return this.ambulanceService.createAmbulance(dto, adminId);
   }
 
