@@ -4,14 +4,14 @@ import { Repository } from 'typeorm';
 import { Admin } from './admin.entity';
 import { AdminRegisterDto, AdminLoginDto } from './admin.dto';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';  // Import JWT Service
+import { JwtService } from '@nestjs/jwt'; 
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private readonly adminRepository: Repository<Admin>,
-    private readonly jwtService: JwtService,  // Inject JWT Service
+    private readonly jwtService: JwtService,  
   ) {}
 
   // Register a new admin

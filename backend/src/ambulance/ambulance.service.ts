@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Admin } from '../admin/admin.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ambulance } from './ambulance.entity';
@@ -12,11 +13,14 @@ export class AmbulanceService {
     private readonly ambulanceRepository: Repository<Ambulance>
   ) {}
 
-  async createAmbulance(dto: AmbulanceDto): Promise<Ambulance> {
+  async createAmbulance(dto: AmbulanceDto, adminId: number): Promise<Ambulance> {
     const ambulance = new Ambulance();
     ambulance.vehicle_number = dto.vehicle_number;
     await ambulance.setPassword(dto.password);
-
+  
+    // Find and assign the admin who created this ambulance
+    ambulance.admin = { id: adminId } as Admin; 
+  
     return this.ambulanceRepository.save(ambulance);
   }
 
