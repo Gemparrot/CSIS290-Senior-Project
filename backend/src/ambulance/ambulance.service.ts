@@ -34,7 +34,7 @@ export class AmbulanceService {
     }
   
     // Add ambulance ID to the JWT payload
-    const payload = { sub: ambulance.id, vehicle_number: ambulance.vehicle_number };
+    const payload = { vehicle_number: ambulance.vehicle_number, sub: ambulance.id, userType: 'ambulance' };
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
   
     return { accessToken };
