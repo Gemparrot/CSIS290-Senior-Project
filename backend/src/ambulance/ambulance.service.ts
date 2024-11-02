@@ -17,9 +17,7 @@ export class AmbulanceService {
     const ambulance = new Ambulance();
     ambulance.vehicle_number = dto.vehicle_number;
     await ambulance.setPassword(dto.password);
-  
-    // Find and assign the admin who created this ambulance
-    ambulance.admin = { id: adminId } as Admin; 
+    ambulance.admin = { id: adminId } as Admin;
   
     return this.ambulanceRepository.save(ambulance);
   }
@@ -33,10 +31,35 @@ export class AmbulanceService {
       throw new UnauthorizedException('Invalid vehicle number or password');
     }
   
-    // Add ambulance ID to the JWT payload
     const payload = { vehicle_number: ambulance.vehicle_number, sub: ambulance.id, userType: 'ambulance' };
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
   
     return { accessToken };
+  }
+
+  async getAllAmbulances(adminId: number): Promise<Ambulance[]> {
+    return this.ambulanceRepository.find({ where: { admin: { id: adminId } } });
+  }
+
+  async getAmbulanceById(id: number, adminId: number): Promise<Ambulance> {
+    const ambulance = await this.ambulanceRepository.findOne({
+      where: { id, admin: { id: adminId } },
+    });
+    if (!ambulance) {
+      throw new BadRequestException(`Ambulance with ID ${id} not found`);
+    }
+    return ambulance;
+  }
+
+  async updateAmbulance(id: number, dto: AmbulanceDto, adminId: number): Promise<Ambulance> {
+    const ambulance = await this.getAmbulanceById(id, adminId);
+    if (dto.vehicle_number) ambulance.vehicle_number = dto.vehicle_number;
+    if (dto.password) await ambulance.setPassword(dto.password);
+    return this.ambulanceRepository.save(ambulance);
+  }
+
+  async deleteAmbulance(id: number, adminId: number): Promise<void> {
+    const ambulance = await this.getAmbulanceById(id, adminId);
+    await this.ambulanceRepository.remove(ambulance);
   }
 }

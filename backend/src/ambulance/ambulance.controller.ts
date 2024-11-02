@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get, Param, Put, Delete } from '@nestjs/common';
 import { AmbulanceService } from './ambulance.service';
 import { AmbulanceDto } from './ambulance.dto';
 import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
@@ -11,10 +11,7 @@ export class AmbulanceController {
   @UseGuards(JwtAuthGuard)
   @Post('create')
   async createAmbulance(@Body() dto: AmbulanceDto, @Req() req: ExpressRequest) {
-    const adminId = Number(req.user.id);  
-
-    console.log("Admin ID from request:", adminId);
-
+    const adminId = Number(req.user.id);
     return this.ambulanceService.createAmbulance(dto, adminId);
   }
 
@@ -22,4 +19,36 @@ export class AmbulanceController {
   async login(@Body() dto: AmbulanceDto) {
     return this.ambulanceService.login(dto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getAllAmbulances(@Req() req: ExpressRequest) {
+    const adminId = Number(req.user.id);
+    return this.ambulanceService.getAllAmbulances(adminId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+async getAmbulanceById(@Param('id') id: string, @Req() req: ExpressRequest) {
+  const adminId = Number(req.user.id);
+  return this.ambulanceService.getAmbulanceById(Number(id), adminId);
+}
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+async updateAmbulance(
+  @Param('id') id: string,
+  @Body() dto: AmbulanceDto,
+  @Req() req: ExpressRequest,
+) {
+  const adminId = Number(req.user.id);
+  return this.ambulanceService.updateAmbulance(Number(id), dto, adminId);
+}
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+async deleteAmbulance(@Param('id') id: string, @Req() req: ExpressRequest) {
+  const adminId = Number(req.user.id);
+  return this.ambulanceService.deleteAmbulance(Number(id), adminId);
+}
 }
