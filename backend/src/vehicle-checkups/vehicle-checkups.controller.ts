@@ -1,39 +1,43 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, ParseIntPipe, UseGuards, Req, NotFoundException } from '@nestjs/common';
 import { VehicleCheckupService } from './vehicle-checkups.service';
 import { VehicleCheckupDto } from './vehicle-checkups.dto';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { ExpressRequest } from 'src/shared/interfaces/express-request.interface';
 
 @Controller('vehicle-checkups')
+@UseGuards(JwtAuthGuard)
 export class VehicleCheckupController {
   constructor(private readonly vehicleCheckupService: VehicleCheckupService) {}
 
   @Post('checkup')
-  @UseGuards(JwtAuthGuard)
   async createCheckup(@Req() req: ExpressRequest) {
-  const ambulanceId = parseInt(req.user.id, 10); // Get the ambulance ID from the logged-in user and parse it to a number
-  // Now you can use ambulanceId to create a new vehicle checkup record.
-  return this.vehicleCheckupService.createCheckup(ambulanceId);
-}
-
+    const ambulanceId = parseInt(req.user.id, 10); 
+    return this.vehicleCheckupService.createCheckup(ambulanceId);
+  }
 
   @Get()
-  findAll() {
-    return this.vehicleCheckupService.findAll();
+  async findAll(@Req() req: ExpressRequest) {
+    const ambulanceId = parseInt(req.user.id, 10);
+    return this.vehicleCheckupService.findAllForAmbulance(ambulanceId);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.vehicleCheckupService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number, @Req() req: ExpressRequest) {
+    const ambulanceId = parseInt(req.user.id, 10);
+    const checkup = await this.vehicleCheckupService.findOneForAmbulance(id, ambulanceId);
+    if (!checkup) throw new NotFoundException(`Checkup with ID ${id} not found for this ambulance`);
+    return checkup;
   }
 
   @Put(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateVehicleCheckupDto: VehicleCheckupDto) {
-    return this.vehicleCheckupService.update(id, updateVehicleCheckupDto);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateVehicleCheckupDto: VehicleCheckupDto, @Req() req: ExpressRequest) {
+    const ambulanceId = parseInt(req.user.id, 10);
+    return this.vehicleCheckupService.updateForAmbulance(id, ambulanceId, updateVehicleCheckupDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.vehicleCheckupService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number, @Req() req: ExpressRequest) {
+    const ambulanceId = parseInt(req.user.id, 10);
+    return this.vehicleCheckupService.removeForAmbulance(id, ambulanceId);
   }
 }

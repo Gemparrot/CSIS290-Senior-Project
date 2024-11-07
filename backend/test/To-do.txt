@@ -1,0 +1,56 @@
+Use guards and all functions rather than one by one
+If condition to check user role in the controller rather than sending the id to the service only in get request.
+
+
+Your controller setup with JwtAuthGuard and role-based access control for admins looks good. Here’s how to test each endpoint in Postman:
+
+Set Up Authentication in Postman:
+
+Before testing each endpoint, ensure that you have a valid JWT for an admin user. Authenticate and retrieve the token, then include it in the request headers of each subsequent request as follows:
+Go to the Headers tab in Postman and add:
+Key: Authorization
+Value: Bearer <your_token_here>
+Testing Endpoints:
+
+Make sure to include valid Authorization headers for all requests.
+POST /team-members
+Purpose: Create a new team member (admin only).
+Request: POST http://<your_base_url>/team-members
+Body (JSON):
+json
+Copy code
+{
+  "name": "John Doe"
+}
+Expected Response: The new team member's data, including an id.
+GET /team-members
+Purpose: Retrieve all team members (admin only).
+Request: GET http://<your_base_url>/team-members
+Expected Response: A list of team members.
+GET /team-members/:id
+Purpose: Retrieve a single team member by ID (admin only).
+Request: GET http://<your_base_url>/team-members/1 (Replace 1 with the actual team member ID you want to fetch.)
+Expected Response: The team member’s details with the specified ID.
+PUT /team-members/:id
+Purpose: Update a specific team member's details (admin only).
+Request: PUT http://<your_base_url>/team-members/1 (Replace 1 with the team member ID).
+Body (JSON):
+json
+Copy code
+{
+  "name": "Jane Doe"
+}
+Expected Response: The updated details of the team member.
+DELETE /team-members/:id
+Purpose: Delete a specific team member by ID (admin only).
+Request: DELETE http://<your_base_url>/team-members/1 (Replace 1 with the team member ID).
+Expected Response: Confirmation message or status indicating successful deletion.
+Testing for Non-Admin Users:
+Repeat the requests without an admin token or with a non-admin token to verify that they receive the UnauthorizedException with the message "Access restricted to admin users."
+This should confirm that the access restrictions and CRUD functionality work correctly for the team-members endpoints.
+
+
+
+
+
+
