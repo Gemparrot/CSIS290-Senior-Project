@@ -13,6 +13,7 @@ import { EquipmentCheckupModule } from './equipment-checkups/equipment-checkups.
 import { MissionModule } from './missions/missions.module';
 import { MissionTeamMemberModule } from './mission-team-member/mission-team-member.module';
 import { TimestampsModule } from './timestamps/timestamps.module';
+import { PCRModule } from './pcr/pcr.module';
 
 
 @Module({
@@ -29,6 +30,7 @@ import { TimestampsModule } from './timestamps/timestamps.module';
     TeamMemberModule,
     MissionTeamMemberModule,
     TimestampsModule,
+    PCRModule,
   ],
   controllers: [AppController],
   providers: [AppService],
