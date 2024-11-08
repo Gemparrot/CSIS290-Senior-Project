@@ -12,6 +12,7 @@ import { VehicleCheckupModule } from './vehicle-checkups/vehicle-checkups.module
 import { EquipmentCheckupModule } from './equipment-checkups/equipment-checkups.module';
 import { MissionModule } from './missions/missions.module';
 import { MissionTeamMemberModule } from './mission-team-member/mission-team-member.module';
+import { TimestampsModule } from './timestamps/timestamps.module';
 
 
 @Module({
@@ -27,6 +28,7 @@ import { MissionTeamMemberModule } from './mission-team-member/mission-team-memb
     EquipmentCheckupModule,
     TeamMemberModule,
     MissionTeamMemberModule,
+    TimestampsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
