@@ -1,5 +1,3 @@
-// missions.dto.ts - auto generated file
-// dto/mission.dto.ts
 import { IsString, IsEnum, IsOptional, IsNumber, IsJSON } from 'class-validator';
 
 export class MissionDto {

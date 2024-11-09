@@ -4,14 +4,13 @@ import { Repository } from 'typeorm';
 import { Admin } from './admin.entity';
 import { AdminRegisterDto, AdminLoginDto } from './admin.dto';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';  // Import JWT Service
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(Admin)
     private readonly adminRepository: Repository<Admin>,
-    private readonly jwtService: JwtService,  // Inject JWT Service
   ) {}
 
   // Register a new admin
@@ -43,8 +42,8 @@ export class AdminService {
     }
 
     // Generate JWT token
-    const payload = { username: admin.username, sub: admin.id };
-    const access_token = this.jwtService.sign(payload);
+    const payload = { username: admin.username, sub: admin.id, userType: 'admin' };
+    const access_token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' })
 
     return { access_token };
   }

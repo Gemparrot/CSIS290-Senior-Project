@@ -1,6 +1,4 @@
-// missions.service.ts - auto generated file
-// mission.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Mission } from './missions.entity';
@@ -16,12 +14,11 @@ export class MissionService {
     private ambulanceRepository: Repository<Ambulance>,
   ) {}
 
-  async create(missionDto: MissionDto): Promise<Mission> {
+  async create(missionDto: MissionDto, ambulanceId: number | null): Promise<Mission> {
     const mission = this.missionRepository.create(missionDto);
 
-    // Assign ambulance if provided
-    if (missionDto.ambulanceId) {
-      const ambulance = await this.ambulanceRepository.findOne({ where: { id: missionDto.ambulanceId } });
+    if (ambulanceId) {
+      const ambulance = await this.ambulanceRepository.findOne({ where: { id: ambulanceId } });
       if (!ambulance) throw new NotFoundException('Ambulance not found');
       mission.ambulance = ambulance;
     }
@@ -30,24 +27,24 @@ export class MissionService {
   }
 
   async findAll(): Promise<Mission[]> {
-    return await this.missionRepository.find({ relations: ['ambulance'] });
+    return await this.missionRepository.find({ where: { status: 'completed' }, relations: ['ambulance'] });
   }
 
-  async findPending(): Promise<Mission[]> {
+  async findPending(ambulanceId: number): Promise<Mission[]> {
     return await this.missionRepository.find({
-      where: { status: 'pending' },
+      where: { status: 'pending', ambulance: { id: ambulanceId } },
       relations: ['ambulance'],
     });
   }
 
-  async findOne(id: number): Promise<Mission> {
-    const mission = await this.missionRepository.findOne({ where: { id }, relations: ['ambulance'] });
+  async findOne(id: number, ambulanceId: number): Promise<Mission> {
+    const mission = await this.missionRepository.findOne({ where: { id, ambulance: { id: ambulanceId } }, relations: ['ambulance'] });
     if (!mission) throw new NotFoundException(`Mission with ID ${id} not found`);
     return mission;
   }
 
-  async update(id: number, missionDto: MissionDto): Promise<Mission> {
-    const mission = await this.findOne(id);
+  async update(id: number, missionDto: MissionDto, ambulanceId: number): Promise<Mission> {
+    const mission = await this.findOne(id, ambulanceId);
 
     if (missionDto.ambulanceId) {
       const ambulance = await this.ambulanceRepository.findOne({ where: { id: missionDto.ambulanceId } });
@@ -55,12 +52,19 @@ export class MissionService {
       mission.ambulance = ambulance;
     }
 
+    if (missionDto.status === 'completed' && !mission.completed_at) {
+      mission.completed_at = new Date();
+    }
+    if (missionDto.status === 'canceled' && !mission.canceled_at) {
+      mission.canceled_at = new Date();
+    }
+
     Object.assign(mission, missionDto);
     return await this.missionRepository.save(mission);
   }
 
-  async remove(id: number): Promise<void> {
-    const mission = await this.findOne(id);
+  async remove(id: number, ambulanceId: number): Promise<void> {
+    const mission = await this.findOne(id, ambulanceId);
     await this.missionRepository.remove(mission);
   }
 }

@@ -4,15 +4,10 @@ import { Repository } from 'typeorm';
 import { VehicleCheckup } from './vehicle-checkups.entity';
 import { VehicleCheckupDto } from './vehicle-checkups.dto';
 import { Ambulance } from '../ambulance/ambulance.entity';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class VehicleCheckupService {
-  remove(id: number) {
-      throw new Error('Method not implemented.');
-  }
-  update(id: number, updateVehicleCheckupDto: VehicleCheckupDto) {
-      throw new Error('Method not implemented.');
-  }
   constructor(
     @InjectRepository(VehicleCheckup)
     private vehicleCheckupRepository: Repository<VehicleCheckup>,
@@ -20,65 +15,49 @@ export class VehicleCheckupService {
     private ambulanceRepository: Repository<Ambulance>,
   ) {}
 
-  async create(createVehicleCheckupDto: VehicleCheckupDto): Promise<VehicleCheckup> {
-    const checkup = this.vehicleCheckupRepository.create(createVehicleCheckupDto);
+  async createCheckup(ambulanceId: number): Promise<VehicleCheckup> {
+    const checkup = new VehicleCheckup();
+    checkup.ambulance = { id: ambulanceId } as Ambulance;
+    checkup.is_checked = 'unchecked';
+    return this.vehicleCheckupRepository.save(checkup);
+  }
 
-    if (createVehicleCheckupDto.ambulanceId) {
-      const ambulance = await this.ambulanceRepository.findOne({ where: { id: createVehicleCheckupDto.ambulanceId } });
-      if (!ambulance) throw new NotFoundException('Ambulance not found');
-      checkup.ambulance = ambulance;
-    }
+  async findAllForAmbulance(ambulanceId: number): Promise<VehicleCheckup[]> {
+    return await this.vehicleCheckupRepository.find({
+      where: { ambulance: { id: ambulanceId } },
+      relations: ['ambulance'],
+    });
+  }
 
+  async findOneForAmbulance(id: number, ambulanceId: number): Promise<VehicleCheckup | null> {
+    return await this.vehicleCheckupRepository.findOne({
+      where: { id, ambulance: { id: ambulanceId } },
+      relations: ['ambulance'],
+    });
+  }
+
+  async updateForAmbulance(id: number, ambulanceId: number, updateVehicleCheckupDto: VehicleCheckupDto): Promise<VehicleCheckup> {
+    const checkup = await this.findOneForAmbulance(id, ambulanceId);
+    if (!checkup) throw new NotFoundException(`Checkup with ID ${id} not found for this ambulance`);
+
+    checkup.is_checked = updateVehicleCheckupDto.is_checked;
+    checkup.checkup_date = new Date();
     return await this.vehicleCheckupRepository.save(checkup);
   }
 
-  async findAll(): Promise<VehicleCheckup[]> {
-    const today = new Date();
-    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+  async removeForAmbulance(id: number, ambulanceId: number): Promise<void> {
+    const checkup = await this.findOneForAmbulance(id, ambulanceId);
+    if (!checkup) throw new NotFoundException(`Checkup with ID ${id} not found for this ambulance`);
 
-    // Reset checkups for vehicles older than today
+    await this.vehicleCheckupRepository.remove(checkup);
+  }
+
+  // Scheduled job to reset checkups to "unchecked" every 24 hours
+  @Cron('0 0 * * *') // This cron expression runs the job at midnight daily
+  async resetCheckupsDaily(): Promise<void> {
     await this.vehicleCheckupRepository.createQueryBuilder()
       .update(VehicleCheckup)
       .set({ is_checked: 'unchecked' })
-      .where('checkup_date < :date', { date: startOfDay })
       .execute();
-
-    return await this.vehicleCheckupRepository.find({ relations: ['ambulance'] });
-  }
-
-  async findOne(id: number): Promise<VehicleCheckup> {
-    const checkup = await this.vehicleCheckupRepository.findOne({ where: { id }, relations: ['ambulance'] });
-    if (!checkup) throw new NotFoundException(`Checkup with ID ${id} not found`);
-    return checkup;
-  }
-
-  async checkVehicle(ambulanceId: number): Promise<VehicleCheckup> {
-    const checkup = await this.vehicleCheckupRepository.findOne({ where: { ambulance: { id: ambulanceId } } });
-
-    if (!checkup) {
-      // If no checkup exists for the ambulance, create a new one
-      const newCheckup = this.vehicleCheckupRepository.create({
-        ambulance: { id: ambulanceId } as Ambulance,
-        is_checked: 'checked',
-        checkup_date: new Date(),
-      });
-      return await this.vehicleCheckupRepository.save(newCheckup);
-    }
-
-    // Update existing checkup to "checked"
-    checkup.is_checked = 'checked';
-    checkup.checkup_date = new Date(); 
-    return await this.vehicleCheckupRepository.save(checkup);
-  }
-
-  async uncheckVehicle(ambulanceId: number): Promise<VehicleCheckup> {
-    const checkup = await this.vehicleCheckupRepository.findOne({ where: { ambulance: { id: ambulanceId } } });
-
-    if (!checkup) {
-      throw new NotFoundException('No checkup found for this ambulance');
-    }
-
-    checkup.is_checked = 'unchecked';
-    return await this.vehicleCheckupRepository.save(checkup);
   }
 }

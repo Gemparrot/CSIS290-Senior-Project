@@ -1,4 +1,3 @@
-// dto/team-member.dto.ts
 import { IsString, IsOptional } from 'class-validator';
 
 export class TeamMemberDto {
