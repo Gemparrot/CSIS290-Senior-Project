@@ -9,7 +9,11 @@ import { AdminModule } from './admin/admin.module';
 import { AmbulanceModule } from './ambulance/ambulance.module';
 import { TeamMemberModule } from './team-members/team-members.module';
 import { VehicleCheckupModule } from './vehicle-checkups/vehicle-checkups.module';
+import { EquipmentCheckupModule } from './equipment-checkups/equipment-checkups.module';
 import { MissionModule } from './missions/missions.module';
+import { MissionTeamMemberModule } from './mission-team-member/mission-team-member.module';
+import { TimestampsModule } from './timestamps/timestamps.module';
+import { PCRModule } from './pcr/pcr.module';
 
 
 @Module({
@@ -22,7 +26,11 @@ import { MissionModule } from './missions/missions.module';
     AmbulanceModule,
     MissionModule,
     VehicleCheckupModule,
+    EquipmentCheckupModule,
     TeamMemberModule,
+    MissionTeamMemberModule,
+    TimestampsModule,
+    PCRModule,
   ],
   controllers: [AppController],
   providers: [AppService],
