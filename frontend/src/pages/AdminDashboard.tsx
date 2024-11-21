@@ -7,8 +7,8 @@ const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the token from localStorage
-    navigate('/login'); // Redirect to the login page
+    localStorage.removeItem('token');
+    navigate('/login'); 
   };
 
   return (

@@ -1,11 +1,10 @@
-//login amvulance and admin. register aambulance.
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import adminService from '../services/admin';
+import ambulanceService from '../services/ambulance'; 
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [emailOrVehicleNumber, setEmailOrVehicleNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -15,11 +14,26 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      // Use the adminService to log in
-      const response = await adminService.login({ email, password }) as { token: string };
-      localStorage.setItem('token', response.token); // Store the token for authentication
-      navigate('/admin/dashboard');
-      // Redirect or navigate to the admin dashboard
+      let response: { token: string };
+
+      const isEmail = /\S+@\S+\.\S+/.test(emailOrVehicleNumber);
+
+      if (isEmail) {
+        // Admin login
+        response = await adminService.login({ email: emailOrVehicleNumber, password }) as { token: string };
+      } else {
+        // Ambulance login
+        response = await ambulanceService.login({ vehicle_number: emailOrVehicleNumber, password }) as { token: string };
+      }
+
+      localStorage.setItem('token', response.token); 
+
+      
+      if (isEmail) {
+        navigate('/admin/dashboard'); 
+      } else {
+        navigate('/ambulance/homepage'); 
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
     }
@@ -28,17 +42,17 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form className="bg-white p-6 rounded shadow-md w-96" onSubmit={handleLogin}>
-        <h2 className="text-2xl font-bold mb-4 text-center">Admin Login</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Email
+          <label htmlFor="emailOrVehicleNumber" className="block text-sm font-medium text-gray-700">
+            Email or Vehicle Number
           </label>
           <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            id="emailOrVehicleNumber"
+            type="text"
+            value={emailOrVehicleNumber}
+            onChange={(e) => setEmailOrVehicleNumber(e.target.value)}
             className="mt-1 block w-full rounded border-gray-300 shadow-sm"
             required
           />
