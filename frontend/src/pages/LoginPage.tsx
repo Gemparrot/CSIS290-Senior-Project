@@ -1,12 +1,14 @@
 //login amvulance and admin. register aambulance.
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import adminService from '../services/admin';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +18,7 @@ const LoginPage: React.FC = () => {
       // Use the adminService to log in
       const response = await adminService.login({ email, password }) as { token: string };
       localStorage.setItem('token', response.token); // Store the token for authentication
-      alert('Login successful!');
+      navigate('/admin/dashboard');
       // Redirect or navigate to the admin dashboard
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
