@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import adminService from '../services/admin';
 import ambulanceService from '../services/ambulance'; 
 
@@ -14,73 +14,103 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     try {
-      let response: { token: string };
+      let response: { accessToken: string };
 
       const isEmail = /\S+@\S+\.\S+/.test(emailOrVehicleNumber);
 
       if (isEmail) {
         // Admin login
-        response = await adminService.login({ email: emailOrVehicleNumber, password }) as { token: string };
+        response = await adminService.login({ email: emailOrVehicleNumber, password }) as { accessToken: string };
       } else {
         // Ambulance login
-        response = await ambulanceService.login({ vehicle_number: emailOrVehicleNumber, password }) as { token: string };
+        response = await ambulanceService.login({ vehicle_number: emailOrVehicleNumber, password }) as { accessToken: string };
+        console.log('Ambulance Response:', response);
       }
 
-      localStorage.setItem('token', response.token); 
+       // Check if response has token
+  if (response && response.accessToken) {
+    localStorage.setItem('token', response.accessToken);
+    console.log('Token stored:', localStorage.getItem('token'));
 
-      
-      if (isEmail) {
-        navigate('/admin/dashboard'); 
-      } else {
-        navigate('/ambulance/homepage'); 
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+    if (isEmail) {
+      navigate('/admin/dashboard');
+    } else {
+      navigate('/ambulance/homepage');
     }
+  } else {
+    throw new Error('No token received from server');
+  }
+} catch (err: any) {
+  console.error('Login error:', err); // Add this line
+  setError(err.response?.data?.message || 'Login failed');
+}
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form className="bg-white p-6 rounded shadow-md w-96" onSubmit={handleLogin}>
-        <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
-
-        <div className="mb-4">
-          <label htmlFor="emailOrVehicleNumber" className="block text-sm font-medium text-gray-700">
-            Email or Vehicle Number
-          </label>
-          <input
-            id="emailOrVehicleNumber"
-            type="text"
-            value={emailOrVehicleNumber}
-            onChange={(e) => setEmailOrVehicleNumber(e.target.value)}
-            className="mt-1 block w-full rounded border-gray-300 shadow-sm"
-            required
-          />
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="max-w-md w-full space-y-8 bg-white p-6 sm:p-8 rounded-lg shadow-md">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h2>
+          <p className="text-gray-600">Please sign in to your account</p>
         </div>
+  
+        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          <div className="space-y-5">
+            <div>
+              <label 
+                htmlFor="emailOrVehicleNumber" 
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Email or Vehicle Number
+              </label>
+              <input
+                id="emailOrVehicleNumber"
+                type="text"
+                value={emailOrVehicleNumber}
+                onChange={(e) => setEmailOrVehicleNumber(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                required
+              />
+            </div>
+  
+            <div>
+              <label 
+                htmlFor="password" 
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                required
+              />
+            </div>
+          </div>
+  
+          {error && (
+            <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm">
+              {error}
+            </div>
+          )}
+  
+          <button
+            type="submit"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+          >
+            Sign in
+          </button>
+        </form>
 
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 block w-full rounded border-gray-300 shadow-sm"
-            required
-          />
-        </div>
-
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-        >
-          Login
-        </button>
-      </form>
+        <div className="text-center mt-4">
+        <p className="text-gray-600">
+          Don't have an account? <Link to="/register" className="text-blue-600 hover:text-blue-800">Register HQ</Link>
+        </p>
+      </div>
+      </div>
     </div>
   );
 };

@@ -28,11 +28,17 @@ export class AmbulanceController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-async getAmbulanceById(@Param('id') id: string, @Req() req: ExpressRequest) {
-  const adminId = Number(req.user.id);
-  return this.ambulanceService.getAmbulanceById(Number(id), adminId);
-}
+  @Get('me')
+  async getMyAmbulance(@Req() req): Promise<AmbulanceDto> {
+    const ambulanceId = req.user.sub; // Extract ambulance ID from JWT payload
+    return this.ambulanceService.getAmbulanceById(ambulanceId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/admin/:adminId')
+  async getAmbulanceByAdminId(@Param('id') id: number, @Param('adminId') adminId: number): Promise<AmbulanceDto> {
+    return this.ambulanceService.getAmbulanceByAdminId(id, adminId);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')

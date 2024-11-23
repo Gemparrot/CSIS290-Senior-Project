@@ -40,8 +40,18 @@ export class AmbulanceService {
   async getAllAmbulances(adminId: number): Promise<Ambulance[]> {
     return this.ambulanceRepository.find({ where: { admin: { id: adminId } } });
   }
+  
+  async getAmbulanceById(id: number): Promise<Ambulance> {
+    const ambulance = await this.ambulanceRepository.findOne({
+      where: { id },
+    });
+    if (!ambulance) {
+      throw new BadRequestException(`Ambulance with ID ${id} not found`);
+    }
+    return ambulance;
+  }
 
-  async getAmbulanceById(id: number, adminId: number): Promise<Ambulance> {
+  async getAmbulanceByAdminId(id: number, adminId: number): Promise<Ambulance> {
     const ambulance = await this.ambulanceRepository.findOne({
       where: { id, admin: { id: adminId } },
     });
@@ -52,14 +62,14 @@ export class AmbulanceService {
   }
 
   async updateAmbulance(id: number, dto: AmbulanceDto, adminId: number): Promise<Ambulance> {
-    const ambulance = await this.getAmbulanceById(id, adminId);
+    const ambulance = await this.getAmbulanceByAdminId(id, adminId);
     if (dto.vehicle_number) ambulance.vehicle_number = dto.vehicle_number;
     if (dto.password) await ambulance.setPassword(dto.password);
     return this.ambulanceRepository.save(ambulance);
   }
 
   async deleteAmbulance(id: number, adminId: number): Promise<void> {
-    const ambulance = await this.getAmbulanceById(id, adminId);
+    const ambulance = await this.getAmbulanceByAdminId(id, adminId);
     await this.ambulanceRepository.remove(ambulance);
   }
 }
