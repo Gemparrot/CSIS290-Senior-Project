@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ambulanceService from '../services/ambulance';
+import MissionForm from '../components/MissionForm';
 
 interface Ambulance {
   vehicle_number: string;
@@ -9,6 +10,7 @@ interface Ambulance {
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [vehicleNumber, setVehicleNumber] = useState<string | null>(null);
+  const [isMissionFormOpen, setIsMissionFormOpen] = useState(false);
 
   useEffect(() => {
     const fetchAmbulanceDetails = async () => {
@@ -48,10 +50,10 @@ const HomePage: React.FC = () => {
           <ul className="space-y-4">
             <li>
               <button
-                onClick={() => navigate('/pending-pcr')}
+                onClick={() => navigate('/pending-missions')}
                 className="w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
               >
-                Pending PCR
+              Pending PCR
               </button>
             </li>
             <li>
@@ -72,10 +74,10 @@ const HomePage: React.FC = () => {
             </li>
             <li>
               <button
-                onClick={() => navigate('/create-mission')}
+                onClick={() => setIsMissionFormOpen(true)}
                 className="w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
               >
-                Create Mission
+              Create Mission
               </button>
             </li>
             <li>
@@ -95,6 +97,11 @@ const HomePage: React.FC = () => {
           <p className="text-gray-500">Main content area will be added later.</p>
         </main>
       </div>
+
+      <MissionForm 
+        isOpen={isMissionFormOpen}
+        onClose={() => setIsMissionFormOpen(false)}
+      />
 
       {/* Footer */}
       <footer className="bg-gray-200 text-gray-700 p-4 text-center">
