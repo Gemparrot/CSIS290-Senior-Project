@@ -18,20 +18,20 @@ export class MissionTeamMemberController {
     return this.missionTeamMemberService.create(createMissionTeamMemberDto);
   }
 
-  @Get()
-  async findAll(@Req() req: ExpressRequest) {
-    if (req.user?.userType !== 'ambulance') {
-      throw new UnauthorizedException('Access restricted to ambulance users.');
-    }
-    return this.missionTeamMemberService.findAll();
-  }
-
   @Get(':id')
   async findOne(@Param('id') id: number, @Req() req: ExpressRequest) {
     if (req.user?.userType !== 'ambulance') {
       throw new UnauthorizedException('Access restricted to ambulance users.');
     }
     return this.missionTeamMemberService.findOne(id);
+  }
+
+  @Get('mission/:missionId')
+  async findByMissionId(@Param('missionId') missionId: number, @Req() req: ExpressRequest) {
+    if (req.user?.userType !== 'ambulance') {
+      throw new UnauthorizedException('Access restricted to ambulance users.');
+    }
+    return this.missionTeamMemberService.findByMissionId(missionId);
   }
 
   @Patch(':id')

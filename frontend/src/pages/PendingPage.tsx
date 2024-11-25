@@ -61,9 +61,37 @@ const PendingMissionsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Pending Missions</h1>
+    <div className="min-h-screen bg-gray-100">
+      {/* Header */}
+      <div className="bg-white shadow">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <button 
+              onClick={() => navigate('/ambulance/homepage')} 
+              className="flex items-center text-gray-600 hover:text-gray-900"
+            >
+              <svg 
+                className="w-6 h-6 mr-2" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth="2" 
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+            </button>
+            <h1 className="text-2xl font-bold">RescueSync</h1>
+          </div>
+        </div>
+      </div>
+  
+      {/* Content */}
+      <div className="max-w-6xl mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-6">Pending Missions</h2>
         
         <div className="bg-white rounded-lg shadow overflow-hidden">
           {missions.length === 0 ? (
@@ -75,15 +103,20 @@ const PendingMissionsPage: React.FC = () => {
               {missions.map((mission) => (
                 <div
                   key={mission.id}
-                  onClick={() => navigate(`/team-members/${mission.id}`)}
+                  onClick={() => navigate(`/mission/${mission.id}`)}
                   className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <div className="flex justify-between items-start">
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
+                        <span className="px-2 py-1 bg-gray-100 rounded-full text-xs font-medium text-gray-600">
+                          M: {mission.id}
+                        </span>
+
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getMissionTypeStyle(mission.mission_type)}`}>
                           {mission.mission_type}
                         </span>
+                        
                         <h3 className="text-lg font-medium">
                           {mission.patient_name}
                         </h3>

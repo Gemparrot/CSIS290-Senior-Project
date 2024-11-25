@@ -1,5 +1,4 @@
-// mission-team-member.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MissionTeamMember } from './mission-team-member.entity';
@@ -11,69 +10,107 @@ import { TeamMember } from '../team-members/team-members.entity';
 export class MissionTeamMemberService {
   constructor(
     @InjectRepository(MissionTeamMember)
-    private missionTeamMemberRepository: Repository<MissionTeamMember>,
+    private readonly missionTeamMemberRepository: Repository<MissionTeamMember>,
     @InjectRepository(Mission)
-    private missionRepository: Repository<Mission>,
+    private readonly missionRepository: Repository<Mission>,
     @InjectRepository(TeamMember)
-    private teamMemberRepository: Repository<TeamMember>,
+    private readonly teamMemberRepository: Repository<TeamMember>,
   ) {}
 
   async create(createMissionTeamMemberDto: CreateMissionTeamMemberDto): Promise<MissionTeamMember> {
-    const mission = await this.missionRepository.findOneBy({ id: createMissionTeamMemberDto.missionId });
+    const { missionId, teamMemberId, role } = createMissionTeamMemberDto;
 
-    const missionTeamMember = new MissionTeamMember();
-    missionTeamMember.mission = mission;
+    const mission = await this.missionRepository.findOne({ where: { id: missionId } });
+    if (!mission) {
+      throw new NotFoundException(`Mission with ID ${missionId} not found`);
+    }
 
-    if (createMissionTeamMemberDto.driverId) {
-      missionTeamMember.driver = await this.teamMemberRepository.findOneBy({ id: createMissionTeamMemberDto.driverId });
+    const teamMember = await this.teamMemberRepository.findOne({ where: { id: teamMemberId } });
+    if (!teamMember) {
+      throw new NotFoundException(`Team member with ID ${teamMemberId} not found`);
     }
-    if (createMissionTeamMemberDto.missionLeaderId) {
-      missionTeamMember.mission_leader = await this.teamMemberRepository.findOneBy({ id: createMissionTeamMemberDto.missionLeaderId });
+
+    // Check if the role already exists for the mission
+    const existingAssignment = await this.missionTeamMemberRepository.findOne({
+      where: { mission: { id: missionId }, role },
+    });
+
+    if (existingAssignment) {
+      throw new BadRequestException(`A team member with the role ${role} is already assigned to this mission`);
     }
-    if (createMissionTeamMemberDto.emt1Id) {
-      missionTeamMember.emt1 = await this.teamMemberRepository.findOneBy({ id: createMissionTeamMemberDto.emt1Id });
-    }
-    if (createMissionTeamMemberDto.emt2Id) {
-      missionTeamMember.emt2 = await this.teamMemberRepository.findOneBy({ id: createMissionTeamMemberDto.emt2Id });
-    }
-    if (createMissionTeamMemberDto.emt3Id) {
-      missionTeamMember.emt3 = await this.teamMemberRepository.findOneBy({ id: createMissionTeamMemberDto.emt3Id });
-    }
+
+    const missionTeamMember = this.missionTeamMemberRepository.create({
+      mission,
+      teamMember,
+      role,
+    });
 
     return this.missionTeamMemberRepository.save(missionTeamMember);
   }
 
   async update(id: number, updateMissionTeamMemberDto: UpdateMissionTeamMemberDto): Promise<MissionTeamMember> {
-    const missionTeamMember = await this.missionTeamMemberRepository.findOneBy({ id });
+    const missionTeamMember = await this.missionTeamMemberRepository.findOne({ where: { id } });
+    if (!missionTeamMember) {
+      throw new NotFoundException(`Mission team member with ID ${id} not found`);
+    }
 
-    if (updateMissionTeamMemberDto.driverId) {
-      missionTeamMember.driver = await this.teamMemberRepository.findOneBy({ id: updateMissionTeamMemberDto.driverId });
+    const { missionId, teamMemberId, role } = updateMissionTeamMemberDto;
+
+    if (missionId) {
+      const mission = await this.missionRepository.findOne({ where: { id: missionId } });
+      if (!mission) {
+        throw new NotFoundException(`Mission with ID ${missionId} not found`);
+      }
+      missionTeamMember.mission = mission;
     }
-    if (updateMissionTeamMemberDto.missionLeaderId) {
-      missionTeamMember.mission_leader = await this.teamMemberRepository.findOneBy({ id: updateMissionTeamMemberDto.missionLeaderId });
+
+    if (teamMemberId) {
+      const teamMember = await this.teamMemberRepository.findOne({ where: { id: teamMemberId } });
+      if (!teamMember) {
+        throw new NotFoundException(`Team member with ID ${teamMemberId} not found`);
+      }
+      missionTeamMember.teamMember = teamMember;
     }
-    if (updateMissionTeamMemberDto.emt1Id) {
-      missionTeamMember.emt1 = await this.teamMemberRepository.findOneBy({ id: updateMissionTeamMemberDto.emt1Id });
-    }
-    if (updateMissionTeamMemberDto.emt2Id) {
-      missionTeamMember.emt2 = await this.teamMemberRepository.findOneBy({ id: updateMissionTeamMemberDto.emt2Id});
-    }
-    if (updateMissionTeamMemberDto.emt3Id) {
-      missionTeamMember.emt3 = await this.teamMemberRepository.findOneBy({ id: updateMissionTeamMemberDto.emt3Id});
+
+    if (role) {
+      // Check if the role already exists for the mission
+      const existingAssignment = await this.missionTeamMemberRepository.findOne({
+        where: { mission: { id: missionTeamMember.mission.id }, role },
+      });
+
+      if (existingAssignment && existingAssignment.id !== id) {
+        throw new BadRequestException(`A team member with the role ${role} is already assigned to this mission`);
+      }
+
+      missionTeamMember.role = role;
     }
 
     return this.missionTeamMemberRepository.save(missionTeamMember);
   }
 
   async findAll(): Promise<MissionTeamMember[]> {
-    return this.missionTeamMemberRepository.find({ relations: ['mission', 'driver', 'mission_leader', 'emt1', 'emt2', 'emt3'] });
+    return this.missionTeamMemberRepository.find({ relations: ['mission', 'teamMember'] });
   }
 
   async findOne(id: number): Promise<MissionTeamMember> {
-    return this.missionTeamMemberRepository.findOne({ where: { id }, relations: ['mission', 'driver', 'mission_leader', 'emt1', 'emt2', 'emt3'] });
+    const missionTeamMember = await this.missionTeamMemberRepository.findOne({ where: { id }, relations: ['mission', 'teamMember'] });
+    if (!missionTeamMember) {
+      throw new NotFoundException(`Mission team member with ID ${id} not found`);
+    }
+    return missionTeamMember;
+  }
+
+  async findByMissionId(missionId: number): Promise<MissionTeamMember[]> {
+    return this.missionTeamMemberRepository.find({
+      where: { mission: { id: missionId } },
+      relations: ['mission', 'teamMember'],
+    });
   }
 
   async delete(id: number): Promise<void> {
-    await this.missionTeamMemberRepository.delete(id);
+    const result = await this.missionTeamMemberRepository.delete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Mission team member with ID ${id} not found`);
+    }
   }
 }

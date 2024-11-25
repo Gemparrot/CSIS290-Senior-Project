@@ -38,7 +38,7 @@ const HomePage: React.FC = () => {
       {/* Header */}
       <header className="bg-blue-600 text-white p-4 flex items-center justify-between">
         <div className="flex items-center">
-          <img src="/logo.png" alt="RescueSync Logo" className="w-10 h-10 mr-2" />
+          <img src="../../public/red-cross-logo.png" alt="RescueSync Logo" className="w-10 h-10 mr-2" />
           <h1 className="text-2xl font-bold">RescueSync</h1>
         </div>
       </header>

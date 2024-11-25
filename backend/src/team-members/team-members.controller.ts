@@ -19,9 +19,9 @@ export class TeamMemberController {
 
   @Get()
   async findAll(@Req() req: ExpressRequest) {
-    if (req.user?.userType !== 'admin') {
-      throw new UnauthorizedException('Access restricted to admin users.');
-    }
+    // if (req.user?.userType !== 'admin') {
+    //   throw new UnauthorizedException('Access restricted to admin users.');
+    // }
     return this.teamMemberService.findAll();
   }
 

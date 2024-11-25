@@ -2,26 +2,29 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Mission } from '../missions/missions.entity';
 import { TeamMember } from '../team-members/team-members.entity';
 
+export enum Role {
+  MISSION_LEADER = 'missionLeader',
+  DRIVER = 'driver',
+  EMT1 = 'emt1',
+  EMT2 = 'emt2',
+  EMT3 = 'emt3',
+}
+
 @Entity()
 export class MissionTeamMember {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Mission, (mission) => mission.id, { nullable: true })
+  @ManyToOne(() => Mission, (mission) => mission.id, { nullable: false })
   mission: Mission;
 
-  @ManyToOne(() => TeamMember, { nullable: true })
-  driver: TeamMember;
+  @ManyToOne(() => TeamMember, { nullable: false })
+  teamMember: TeamMember;
 
-  @ManyToOne(() => TeamMember, { nullable: true })
-  mission_leader: TeamMember;
-
-  @ManyToOne(() => TeamMember, { nullable: true })
-  emt1: TeamMember;
-
-  @ManyToOne(() => TeamMember, { nullable: true })
-  emt2: TeamMember;
-
-  @ManyToOne(() => TeamMember, { nullable: true })
-  emt3: TeamMember;
+  @Column({
+    type: 'enum',
+    enum: Role,
+    nullable: false,
+  })
+  role: Role;
 }
