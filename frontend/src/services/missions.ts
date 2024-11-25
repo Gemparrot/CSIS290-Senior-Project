@@ -1,7 +1,7 @@
 import axios from '../utils/axiosConfig';
 
 // Define the Mission API payloads
-interface MissionDto {
+export interface MissionDto {
   mission_type: 'emergency' | 'transportation';
   description: string;
   address: string;
@@ -13,40 +13,47 @@ interface MissionDto {
   completed_at?: Date; // Optional field
 }
 
+// Define the Mission response interface
+export interface Mission extends MissionDto {
+  id: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
 const missionService = {
   // Create a new mission
-  create: async (missionDto: MissionDto) => {
-    const response = await axios.post('/missions', missionDto);
+  create: async (missionDto: MissionDto): Promise<Mission> => {
+    const response = await axios.post<Mission>('/missions', missionDto);
     return response.data;
   },
 
   // Get all missions (admin access only)
-  findAll: async () => {
-    const response = await axios.get('/missions');
+  findAll: async (): Promise<Mission[]> => {
+    const response = await axios.get<Mission[]>('/missions');
     return response.data;
   },
 
   // Get pending missions (ambulance-specific or all for admin)
-  findPending: async () => {
-    const response = await axios.get('/missions/pending');
+  findPending: async (): Promise<Mission[]> => {
+    const response = await axios.get<Mission[]>('/missions/pending');
     return response.data;
   },
 
   // Get a specific mission by ID
-  findOne: async (id: number) => {
-    const response = await axios.get(`/missions/${id}`);
+  findOne: async (id: number): Promise<Mission> => {
+    const response = await axios.get<Mission>(`/missions/${id}`);
     return response.data;
   },
 
   // Update a specific mission by ID
-  update: async (id: number, missionDto: MissionDto) => {
-    const response = await axios.put(`/missions/${id}`, missionDto);
+  update: async (id: number, missionDto: MissionDto): Promise<Mission> => {
+    const response = await axios.put<Mission>(`/missions/${id}`, missionDto);
     return response.data;
   },
 
   // Delete a specific mission by ID
-  remove: async (id: number) => {
-    const response = await axios.delete(`/missions/${id}`);
+  remove: async (id: number): Promise<Mission> => {
+    const response = await axios.delete<Mission>(`/missions/${id}`);
     return response.data;
   },
 };

@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TeamMembers from '../components/TeamMembers';
-import Missions from '../components/MissionDetails';
+import { useNavigate, useParams } from 'react-router-dom';
+import TeamMembers from '../components/tabs/TeamMembers';
+import Missions from '../components/tabs/MissionDetails';
 
-// Placeholder components for Missions and PCR
+// Placeholder components for PCR
 const PCR = () => <div className="p-4">PCR component (to be implemented)</div>;
 
 // Main MissionsPage component
 const MissionsPage = () => {
   const navigate = useNavigate();
+  const { missionId } = useParams<{ missionId: string }>(); // Get missionId from URL
   const [activeTab, setActiveTab] = useState<'team' | 'missions' | 'pcr'>('team');
 
   const getTabStyle = (tab: 'team' | 'missions' | 'pcr') => {
@@ -76,7 +77,7 @@ const MissionsPage = () => {
       {/* Content */}
       <div className="max-w-6xl mx-auto p-6">
         {activeTab === 'team' && <TeamMembers />}
-        {activeTab === 'missions' && <Missions />}
+        {activeTab === 'missions' && missionId && <Missions missionId={parseInt(missionId, 10)} />}
         {activeTab === 'pcr' && <PCR />}
       </div>
     </div>

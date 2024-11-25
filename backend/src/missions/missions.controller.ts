@@ -18,7 +18,7 @@ export class MissionController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Req() req: ExpressRequest) {
-    if (req.user.userType === 'admin') {
+    if (req.user.userType === 'admin' || req.user.userType === 'ambulance') {
       return this.missionService.findAll();
     }
     throw new UnauthorizedException('Access restricted to admin users.');

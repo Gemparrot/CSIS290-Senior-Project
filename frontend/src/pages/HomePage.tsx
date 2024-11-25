@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ambulanceService from '../services/ambulance';
-import MissionForm from '../components/MissionForm';
+import MissionForm from '../components/forms/MissionForm';
 
 interface Ambulance {
   vehicle_number: string;

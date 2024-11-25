@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import missionTeamMemberService from '../services/mission-team-member';
+import missionTeamMemberService from '../../services/mission-team-member';
 
 type Role = 'missionLeader' | 'driver' | 'emt1' | 'emt2' | 'emt3';
 

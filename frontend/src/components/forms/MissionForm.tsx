@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import missionService from '../services/missions';
+import missionService from '../../services/missions';
+import missionPatientService from '../../services/mission-patient';
 
 interface MissionFormProps {
   isOpen: boolean;
@@ -22,10 +23,17 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
     setIsSubmitting(true);
     
     try {
-      await missionService.create({
+      // Create the mission first
+      const mission = await missionService.create({
         mission_type: formData.mission_type as 'emergency' | 'transportation',
         description: formData.description,
         address: formData.address
+      });
+
+      // Create the patient record with the returned mission ID
+      await missionPatientService.create({
+        missionId: mission.id,
+        patientName: formData.patient_name
       });
       
       onClose();
@@ -36,7 +44,7 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
         address: ''
       });
     } catch (error) {
-      console.error('Error creating mission:', error);
+      console.error('Error creating mission or patient:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -44,8 +52,8 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value
     }));
   };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import teamMemberService from '../services/team-memebers';
-import MissionTeamMember from '../components/Mission-TeamMember';
+import teamMemberService from '../../services/team-memebers';
+import MissionTeamMember from '../forms/Mission-TeamMember';
 
 interface TeamMemberDto {
   id: number;

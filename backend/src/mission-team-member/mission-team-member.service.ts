@@ -49,13 +49,15 @@ export class MissionTeamMemberService {
   }
 
   async update(id: number, updateMissionTeamMemberDto: UpdateMissionTeamMemberDto): Promise<MissionTeamMember> {
+    console.log('Update Request:', updateMissionTeamMemberDto);  // Log the incoming body
+  
     const missionTeamMember = await this.missionTeamMemberRepository.findOne({ where: { id } });
     if (!missionTeamMember) {
       throw new NotFoundException(`Mission team member with ID ${id} not found`);
     }
-
+  
     const { missionId, teamMemberId, role } = updateMissionTeamMemberDto;
-
+  
     if (missionId) {
       const mission = await this.missionRepository.findOne({ where: { id: missionId } });
       if (!mission) {
@@ -63,7 +65,7 @@ export class MissionTeamMemberService {
       }
       missionTeamMember.mission = mission;
     }
-
+  
     if (teamMemberId) {
       const teamMember = await this.teamMemberRepository.findOne({ where: { id: teamMemberId } });
       if (!teamMember) {
@@ -71,22 +73,16 @@ export class MissionTeamMemberService {
       }
       missionTeamMember.teamMember = teamMember;
     }
-
+  
     if (role) {
-      // Check if the role already exists for the mission
-      const existingAssignment = await this.missionTeamMemberRepository.findOne({
-        where: { mission: { id: missionTeamMember.mission.id }, role },
-      });
-
-      if (existingAssignment && existingAssignment.id !== id) {
-        throw new BadRequestException(`A team member with the role ${role} is already assigned to this mission`);
-      }
-
+      // Log role before updating
+      console.log('Updating role to:', role);
       missionTeamMember.role = role;
     }
-
+  
     return this.missionTeamMemberRepository.save(missionTeamMember);
   }
+  
 
   async findAll(): Promise<MissionTeamMember[]> {
     return this.missionTeamMemberRepository.find({ relations: ['mission', 'teamMember'] });
