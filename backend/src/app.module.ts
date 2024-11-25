@@ -12,6 +12,7 @@ import { VehicleCheckupModule } from './vehicle-checkups/vehicle-checkups.module
 import { EquipmentCheckupModule } from './equipment-checkups/equipment-checkups.module';
 import { MissionModule } from './missions/missions.module';
 import { MissionTeamMemberModule } from './mission-team-member/mission-team-member.module';
+import { MissionPatientModule } from './mission-patient/mission-patient.module';
 import { TimestampsModule } from './timestamps/timestamps.module';
 import { PCRModule } from './pcr/pcr.module';
 
@@ -29,6 +30,7 @@ import { PCRModule } from './pcr/pcr.module';
     EquipmentCheckupModule,
     TeamMemberModule,
     MissionTeamMemberModule,
+    MissionPatientModule,
     TimestampsModule,
     PCRModule,
   ],
