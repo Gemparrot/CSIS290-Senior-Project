@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import TeamMembers from '../components/tabs/TeamMembers';
 import Missions from '../components/tabs/MissionDetails';
+import PCR from '../components/tabs/PCR';
 
-// Placeholder components for PCR
-const PCR = () => <div className="p-4">PCR component (to be implemented)</div>;
 
 // Main MissionsPage component
 const MissionsPage = () => {

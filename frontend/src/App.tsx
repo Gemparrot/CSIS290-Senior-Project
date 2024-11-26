@@ -5,7 +5,8 @@ import HomePage from './pages/HomePage';
 import AdminDashboard from './pages/AdminDashboard';
 import RegisterPage from './pages/RegisterPage';
 import PendingMissionsPage from './pages/PendingPage';
-import MissionsPage from './pages/MissionsPage'; // Add this import
+import MissionsPage from './pages/MissionsPage';
+// import DynamicForm from './components/PCR/components/DynamicForm';
 
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
@@ -34,6 +35,14 @@ const App: React.FC = () => {
           path="/mission/:missionId/*"
           element={<ProtectedRoute element={<MissionsPage />} />}
         />
+
+        {/* <Route
+          path="/missions/:missionId/pcr/:patientId/:sectionId"
+          element={<ProtectedRoute element={<DynamicForm />} />}
+        /> */}
+
+
+        {/* Admin routes */}
         <Route
           path="/admin/dashboard"
           element={<ProtectedRoute element={<AdminDashboard />} />}
