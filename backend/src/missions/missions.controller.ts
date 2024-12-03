@@ -51,4 +51,12 @@ export class MissionController {
     const ambulanceId = req.user.userType === 'ambulance' ? Number(req.user.id) : null;
     return this.missionService.remove(id, ambulanceId);
   }
+
+  @UseGuards(JwtAuthGuard)
+@Get('ambulance/:ambulanceId')
+findAllForAmbulance(
+  @Param('ambulanceId', ParseIntPipe) ambulanceId: number
+) {
+  return this.missionService.findAllForAmbulance(ambulanceId);
+}
 }

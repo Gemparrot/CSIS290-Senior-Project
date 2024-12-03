@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { PlusIcon, TrashIcon } from 'lucide-react';
 import missionPatientService from '../../services/mission-patient';
 
 interface Patient {
@@ -7,27 +8,38 @@ interface Patient {
   patientName: string;
 }
 
-const PatientTableData: React.FC<{ missionId: number }> = ({ missionId }) => {
+interface PatientTableDataProps {
+  missionId: number;
+  patients?: Patient[];
+}
+
+const PatientTableData: React.FC<PatientTableDataProps> = ({ 
+  missionId, 
+  patients: propPatients 
+}) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [newPatientName, setNewPatientName] = useState('');
   const [patientCount, setPatientCount] = useState(0);
 
-  // Fetch patients for the mission
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const data = await missionPatientService.findByMissionId(missionId);
-        setPatients(data);
-        setPatientCount(data.length);
+        if (propPatients && propPatients.length > 0) {
+          setPatients(propPatients);
+          setPatientCount(propPatients.length);
+        } else {
+          const data = await missionPatientService.findByMissionId(missionId);
+          setPatients(data);
+          setPatientCount(data.length);
+        }
       } catch (error) {
         console.error('Failed to fetch patients:', error);
       }
     };
 
     fetchPatients();
-  }, [missionId]);
+  }, [missionId, propPatients]);
 
-  // Handle adding a new patient
   const handleAddPatient = async () => {
     if (!newPatientName.trim()) return;
 
@@ -37,7 +49,6 @@ const PatientTableData: React.FC<{ missionId: number }> = ({ missionId }) => {
         patientName: newPatientName.trim(),
       });
 
-      // Update state with the new patient
       setPatients((prev) => [...prev, newPatient]);
       setPatientCount((prev) => prev + 1);
       setNewPatientName('');
@@ -46,45 +57,65 @@ const PatientTableData: React.FC<{ missionId: number }> = ({ missionId }) => {
     }
   };
 
+  const handleDeletePatient = async (patientId: number) => {
+    try {
+      await missionPatientService.delete(patientId);
+      setPatients((prev) => prev.filter(patient => patient.id !== patientId));
+      setPatientCount((prev) => prev - 1);
+    } catch (error) {
+      console.error('Failed to delete patient:', error);
+    }
+  };
+
   return (
-    <div>
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Patient Count: {patientCount}</h3>
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-800">Patient List</h2>
+        <div className="text-gray-600 font-medium">Total Patients: {patientCount}</div>
       </div>
 
-      <div className="overflow-auto">
-        <table className="table-auto w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border-b">ID</th>
-              <th className="p-2 border-b">Patient Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {patients.map((patient) => (
-              <tr key={patient.id}>
-                <td className="p-2 border-b">{patient.id}</td>
-                <td className="p-2 border-b">{patient.patientName}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-4">
+      <div className="mb-4 flex">
         <input
           type="text"
           value={newPatientName}
           onChange={(e) => setNewPatientName(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleAddPatient()}
           placeholder="Enter patient name"
-          className="p-2 border rounded w-full mb-2"
+          className="flex-grow p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button
+        <button 
           onClick={handleAddPatient}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
+          className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 flex items-center"
         >
+          <PlusIcon className="mr-2 h-5 w-5" />
           Add Patient
         </button>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-100 border-b">
+              <th className="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+              <th className="p-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y">
+            {patients.map((patient) => (
+              <tr key={patient.id} className="hover:bg-gray-50">
+                <td className="p-3 text-sm font-medium text-gray-900">{patient.patientName}</td>
+                <td className="p-3 text-right">
+                  <button
+                    onClick={() => handleDeletePatient(patient.id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <TrashIcon className="h-5 w-5" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

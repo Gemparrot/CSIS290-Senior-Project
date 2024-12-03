@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ambulanceService from '../services/ambulance';
-import MissionForm from '../components/forms/MissionForm';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import ambulanceService from "../services/ambulance";
+import MissionForm from "../components/forms/MissionForm";
 
 interface Ambulance {
   vehicle_number: string;
 }
 
-const HomePage: React.FC = () => {
+const AmbulanceDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [vehicleNumber, setVehicleNumber] = useState<string | null>(null);
   const [isMissionFormOpen, setIsMissionFormOpen] = useState(false);
@@ -19,8 +19,8 @@ const HomePage: React.FC = () => {
         const ambulance = response as Ambulance;
         setVehicleNumber(ambulance.vehicle_number);
       } catch (error) {
-        console.error('Error fetching ambulance details:', error);
-        setVehicleNumber('Error loading');
+        console.error("Error fetching ambulance details:", error);
+        setVehicleNumber("Error loading");
       }
     };
 
@@ -28,87 +28,114 @@ const HomePage: React.FC = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('ambulanceId');
-    navigate('/login');
+    localStorage.removeItem("token");
+    localStorage.removeItem("ambulanceId");
+    navigate("/login");
   };
 
+  const sections = [
+    {
+      id: 1,
+      title: "Pending PCR",
+      description: "View and manage pending missions",
+      route: "/pending-missions",
+      bgGradient: "from-yellow-500 to-yellow-700",
+      hoverShadow: "hover:shadow-yellow-500/50",
+    },
+    {
+      id: 2,
+      title: "Equipment Checkup",
+      description: "Ensure emergency gear readiness",
+      route: "/equipment-checkup",
+      bgGradient: "from-green-500 to-green-700",
+      hoverShadow: "hover:shadow-green-500/50",
+    },
+    {
+      id: 3,
+      title: "Vehicle Checkup",
+      description: "Maintain vehicle condition",
+      route: "/vehicle-checkups",
+      bgGradient: "from-blue-500 to-blue-700",
+      hoverShadow: "hover:shadow-blue-500/50",
+    },
+    {
+      id: 4,
+      title: "Create Mission",
+      description: "Plan and execute new missions",
+      onClick: () => setIsMissionFormOpen(true),
+      bgGradient: "from-red-500 to-red-700",
+      hoverShadow: "hover:shadow-red-500/50",
+    },
+  ];
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <header className="bg-blue-600 text-white p-4 flex items-center justify-between">
-        <div className="flex items-center">
-          <img src="../../public/red-cross-logo.png" alt="RescueSync Logo" className="w-10 h-10 mr-2" />
-          <h1 className="text-2xl font-bold">RescueSync</h1>
+      <header className="bg-blue-600 text-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center">
+              <img
+                src="/red-cross-logo.png"
+                alt="RescueSync Logo"
+                className="h-10 w-10 rounded-full"
+              />
+              <h1 className="text-2xl font-extrabold ml-4">
+                RescueSync <span className="text-white">Ambulance</span>
+              </h1>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 rounded-md hover:bg-red-700 transition-colors flex items-center"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="bg-gray-800 text-white w-64 p-4">
-          <h2 className="text-xl font-bold mb-4">Menu</h2>
-          <ul className="space-y-4">
-            <li>
-              <button
-                onClick={() => navigate('/pending-missions')}
-                className="w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
-              >
-              Pending PCR
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigate('/equipment-checkup')}
-                className="w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
-              >
-                Equipment Checkup
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigate('/vehicle-checkup')}
-                className="w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
-              >
-                Vehicle Checkup
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setIsMissionFormOpen(true)}
-                className="w-full text-left px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
-              >
-              Create Mission
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 bg-red-500 rounded hover:bg-red-600"
-              >
-                Logout
-              </button>
-            </li>
-          </ul>
-        </aside>
+      {/* Dashboard Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-12">
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
+            Ambulance Dashboard
+          </h2>
+          <p className="text-xl text-gray-600">
+            Manage ambulance missions and patient information
+          </p>
+        </div>
 
-        {/* Main Section */}
-        <main className="flex-1 bg-gray-100 p-8 flex items-center justify-center">
-          {/* Placeholder for future technology */}
-          <p className="text-gray-500">Main content area will be added later.</p>
-        </main>
-      </div>
-
-      <MissionForm 
-        isOpen={isMissionFormOpen}
-        onClose={() => setIsMissionFormOpen(false)}
-      />
+        <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          {sections.map((section) => (
+            <div
+              key={section.id}
+              onClick={section.onClick || (() => navigate(section.route))}
+              className={`
+                bg-gradient-to-br ${section.bgGradient} 
+                rounded-2xl p-6 text-white cursor-pointer
+                transform transition-all duration-300 
+                hover:-translate-y-2 ${section.hoverShadow}
+              `}
+            >
+              <h3 className="text-xl font-bold mb-4">{section.title}</h3>
+              <p className="text-sm opacity-75">{section.description}</p>
+            </div>
+          ))}
+        </div>
+      </main>
 
       {/* Footer */}
       <footer className="bg-gray-200 text-gray-700 p-4 text-center">
-        Vehicle Number: {vehicleNumber || 'Loading...'}
+        Vehicle Number: {vehicleNumber || "Loading..."}
       </footer>
+
+      {/* Mission Form Modal */}
+      <MissionForm
+        isOpen={isMissionFormOpen}
+        onClose={() => setIsMissionFormOpen(false)}
+      />
     </div>
   );
 };
 
-export default HomePage;
+export default AmbulanceDashboard;

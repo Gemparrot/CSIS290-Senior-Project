@@ -1,12 +1,25 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import LoginPage from './pages/LoginPage';
-import HomePage from './pages/HomePage';
-import AdminDashboard from './pages/AdminDashboard';
 import RegisterPage from './pages/RegisterPage';
+
+import HomePage from './pages/HomePage';
 import PendingMissionsPage from './pages/PendingPage';
 import MissionsPage from './pages/MissionsPage';
-// import DynamicForm from './components/PCR/components/DynamicForm';
+import VehicleCheckupPage from './pages/VehicleCheckupPage';
+import EquipmentCheckupPage from './pages/EquipmentCheckupPage';
+
+import AdminDashboard from './pages/AdminDashboard';
+import ManageAmbulance from './components/ManageAmbualnce/ManageAmbualnce';
+import ManageTeamMembers from './components/ManageTeamMember/ManageTeamMembers';
+import AmbualnceMissions from './components/ManageAmbualnce/AmbualnceMissions';
+import MissionPCRs from './components/ManageAmbualnce/MissionPCRs';
+import PCRDetails from './components/ManageAmbualnce/ViewPCR';
+
+
+
+
 
 // Protected Route wrapper component
 const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
@@ -35,21 +48,45 @@ const App: React.FC = () => {
           path="/mission/:missionId/*"
           element={<ProtectedRoute element={<MissionsPage />} />}
         />
-
-        {/* <Route
-          path="/missions/:missionId/pcr/:patientId/:sectionId"
-          element={<ProtectedRoute element={<DynamicForm />} />}
-        /> */}
-
+        <Route
+          path="/vehicle-checkups"
+          element={<ProtectedRoute element={<VehicleCheckupPage />} />}
+        />
+        <Route
+          path="/equipment-checkup"
+          element={<ProtectedRoute element={<EquipmentCheckupPage />} />}
+        />
 
         {/* Admin routes */}
         <Route
           path="/admin/dashboard"
           element={<ProtectedRoute element={<AdminDashboard />} />}
         />
+         <Route
+          path="/admin/manage-ambulance"
+          element={<ProtectedRoute element={<ManageAmbulance />} />}
+        />
+         <Route 
+          path="/admin/manage-ambulance/ambulance/:id/missions" 
+          element={<ProtectedRoute element={<AmbualnceMissions />} />} 
+        />
+        <Route
+          path="/admin/manage-ambulance/ambulance/:id/missions/:missionId"
+          element={<ProtectedRoute element={<MissionPCRs />} />}
+        />
+        <Route 
+          path="/admin/manage-ambulance/ambulance/:id/missions/:missionId/pcr/:pcrId" 
+          element={<PCRDetails />} 
+        />
+
+        
+         <Route
+          path="/admin/manage-team-members"
+          element={<ProtectedRoute element={<ManageTeamMembers />} />}
+        />
 
         {/* Default redirect */}
-        <Route path="/" element={<Navigate to="/ambulance/homepage" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

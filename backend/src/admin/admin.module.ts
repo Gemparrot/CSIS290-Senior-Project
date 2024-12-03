@@ -12,8 +12,8 @@ import { PassportModule } from '@nestjs/passport';
     TypeOrmModule.forFeature([Admin]),
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'secretKey',  // Use .env or fallback
-      signOptions: { expiresIn: '1h' },  // Token expiration
+      secret: process.env.JWT_SECRET || 'secretKey', 
+      signOptions: { expiresIn: '1h' },  
     }),
   ],
   providers: [AdminService, JwtStrategy],

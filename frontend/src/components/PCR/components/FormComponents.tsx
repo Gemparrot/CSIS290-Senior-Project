@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { Question } from '../types/FormConfig';
+import { 
+  ChevronDown, 
+  CheckCircle2, 
+  XCircle, 
+} from 'lucide-react';
 
 interface BaseInputProps {
   question: Question;
@@ -18,29 +23,42 @@ export const RadioGroup: React.FC<BaseInputProps> = ({ question, value, onChange
   };
 
   return (
-    <div className="mb-4">
-      <label className="block text-lg font-medium text-gray-700 mb-2">
-        {question.title} {question.required && <span className="text-red-500">*</span>}
-      </label>
-      {question.subtitle && <p className="text-sm text-gray-500 mb-2">{question.subtitle}</p>}
-      <div className="space-y-2">
+    <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="p-4">
+        <label className="block text-lg font-semibold text-gray-800">
+          {question.title} 
+          {question.required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        {question.subtitle && <p className="text-sm text-gray-500 mt-1">{question.subtitle}</p>}
+      </div>
+      <div className="px-4 pb-4 space-y-2">
         {question.options?.map((option) => (
-          <div key={option} className="flex items-center border-b border-gray-200 py-2">
+          <label 
+            key={option} 
+            className={`
+              flex items-center p-3 rounded-md cursor-pointer 
+              transition-colors 
+              ${value === option 
+                ? 'bg-blue-50 border border-blue-200' 
+                : 'hover:bg-gray-100'
+              }
+            `}
+          >
             <input
               type="radio"
               name={question.id}
               value={option}
               checked={value === option}
               onChange={() => handleRadioChange(option)}
-              className="form-radio"
+              className="form-radio text-blue-600 focus:ring-blue-500 mr-3"
               required={question.required}
             />
-            <span className="ml-2">{option}</span>
-          </div>
+            <span className="text-gray-700">{option}</span>
+          </label>
         ))}
       </div>
       {question.conditionalField && value === question.conditionalField.condition && (
-        <div className="mt-2">
+        <div className="p-4 bg-gray-50 border-t border-gray-200">
           {renderFormInput(question.conditionalField.field, conditionalValue, setConditionalValue)}
         </div>
       )}
@@ -48,90 +66,141 @@ export const RadioGroup: React.FC<BaseInputProps> = ({ question, value, onChange
   );
 };
 
-export const Dropdown: React.FC<BaseInputProps> = ({ question, value, onChange }) => (
-  <div className="mb-4">
-    <label htmlFor={question.id} className="block text-lg font-medium text-gray-700 mb-2">
-      {question.title} {question.required && <span className="text-red-500">*</span>}
-    </label>
-    {question.subtitle && <p className="text-sm text-gray-500 mb-2">{question.subtitle}</p>}
-    <select
-      id={question.id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-      required={question.required}
-    >
-      <option value="">Select {question.title}</option>
-      {question.options?.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+// The rest of the code remains the same as in the original file
+export const Dropdown: React.FC<BaseInputProps> = ({ question, value, onChange }) => {
+  return (
+    <div className="mb-6">
+      <label htmlFor={question.id} className="block text-lg font-semibold text-gray-800 mb-2">
+        {question.title} 
+        {question.required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      {question.subtitle && <p className="text-sm text-gray-500 mb-3">{question.subtitle}</p>}
+      <div className="relative">
+        <select
+          id={question.id}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="
+            block w-full px-4 py-3 
+            border border-gray-300 rounded-lg 
+            text-gray-700 
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+            appearance-none
+          "
+          required={question.required}
+        >
+          <option value="" className="text-gray-400">Select {question.title}</option>
+          {question.options?.map((option) => (
+            <option key={option} value={option} className="text-gray-700">
+              {option}
+            </option>
+          ))}
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3">
+          <ChevronDown className="text-gray-400" />
+        </div>
+      </div>
+    </div>
+  );
+};
 
+// Include other input components and renderFormInput function from the original file
 export const TextInput: React.FC<BaseInputProps> = ({ question, value, onChange }) => (
-  <div className="mb-4">
-    <label htmlFor={question.id} className="block text-lg font-medium text-gray-700 mb-2">
-      {question.title} {question.required && <span className="text-red-500">*</span>}
+  <div className="mb-6">
+    <label htmlFor={question.id} className="block text-lg font-semibold text-gray-800 mb-2">
+      {question.title} 
+      {question.required && <span className="text-red-500 ml-1">*</span>}
     </label>
-    {question.subtitle && <p className="text-sm text-gray-500 mb-2">{question.subtitle}</p>}
+    {question.subtitle && <p className="text-sm text-gray-500 mb-3">{question.subtitle}</p>}
     <input
       type="text"
       id={question.id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      className="
+        block w-full px-4 py-3 
+        border border-gray-300 rounded-lg 
+        text-gray-700 
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+      "
       required={question.required}
+      placeholder={`Enter ${question.title}`}
     />
   </div>
 );
 
 export const NumericInput: React.FC<BaseInputProps> = ({ question, value, onChange }) => (
-  <div className="mb-4">
-    <label htmlFor={question.id} className="block text-lg font-medium text-gray-700 mb-2">
-      {question.title} {question.required && <span className="text-red-500">*</span>}
+  <div className="mb-6">
+    <label htmlFor={question.id} className="block text-lg font-semibold text-gray-800 mb-2">
+      {question.title} 
+      {question.required && <span className="text-red-500 ml-1">*</span>}
     </label>
-    {question.subtitle && <p className="text-sm text-gray-500 mb-2">{question.subtitle}</p>}
+    {question.subtitle && <p className="text-sm text-gray-500 mb-3">{question.subtitle}</p>}
     <input
       type="number"
       id={question.id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+      className="
+        block w-full px-4 py-3 
+        border border-gray-300 rounded-lg 
+        text-gray-700 
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+      "
       required={question.required}
       min={question.min}
       max={question.max}
+      placeholder={`Enter ${question.title}`}
     />
   </div>
 );
 
 export const YesNoInput: React.FC<BaseInputProps> = ({ question, value, onChange }) => {
   return (
-    <div className="mb-4">
-      <div className="flex items-center justify-between">
-        <label className="block text-lg font-medium text-gray-700">
-          {question.title} {question.required && <span className="text-red-500">*</span>}
+    <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <div className="flex items-center justify-between mb-3">
+        <label className="block text-lg font-semibold text-gray-800">
+          {question.title} 
+          {question.required && <span className="text-red-500 ml-1">*</span>}
         </label>
-        <div className="flex space-x-4">
-          <button
-            type="button"
-            className={`px-4 py-2 rounded ${value === 'Yes' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-            onClick={() => onChange('Yes')}
-          >
-            Yes
-          </button>
-          <button
-            type="button"
-            className={`px-4 py-2 rounded ${value === 'No' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-            onClick={() => onChange('No')}
-          >
-            No
-          </button>
-        </div>
       </div>
-      {question.subtitle && <p className="text-sm text-gray-500 mt-2">{question.subtitle}</p>}
+      {question.subtitle && <p className="text-sm text-gray-500 mb-3">{question.subtitle}</p>}
+      <div className="flex space-x-4">
+        <button
+          type="button"
+          className={`
+            flex-1 py-3 rounded-lg 
+            flex items-center justify-center 
+            space-x-2 font-semibold 
+            transition-colors duration-300
+            ${value === 'Yes' 
+              ? 'bg-green-500 text-white' 
+              : 'bg-green-50 text-green-700 border border-green-200 hover:bg-green-100'
+            }
+          `}
+          onClick={() => onChange('Yes')}
+        >
+          <CheckCircle2 className="w-5 h-5" />
+          <span>Yes</span>
+        </button>
+        <button
+          type="button"
+          className={`
+            flex-1 py-3 rounded-lg 
+            flex items-center justify-center 
+            space-x-2 font-semibold 
+            transition-colors duration-300
+            ${value === 'No' 
+              ? 'bg-red-500 text-white' 
+              : 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'
+            }
+          `}
+          onClick={() => onChange('No')}
+        >
+          <XCircle className="w-5 h-5" />
+          <span>No</span>
+        </button>
+      </div>
     </div>
   );
 };

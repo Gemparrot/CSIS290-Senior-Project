@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Req, UseGuards, Get, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Req, UseGuards, Get, Param, Put, Delete, Query, BadRequestException } from '@nestjs/common';
 import { AmbulanceService } from './ambulance.service';
 import { AmbulanceDto } from './ambulance.dto';
+import { RegisterAmbulanceDto } from './ambulance.dto';
 import { JwtAuthGuard } from '../shared/guards/jwt-auth.guard';
 import { ExpressRequest } from '../shared/interfaces/express-request.interface';
 
@@ -10,9 +11,9 @@ export class AmbulanceController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create')
-  async createAmbulance(@Body() dto: AmbulanceDto, @Req() req: ExpressRequest) {
-    const adminId = Number(req.user.id);
-    return this.ambulanceService.createAmbulance(dto, adminId);
+  async createAmbulance(@Body() dto: RegisterAmbulanceDto, @Req() req: ExpressRequest) {
+    console.log("controlerr:", dto);
+    return this.ambulanceService.createAmbulance(dto);
   }
 
   @Post('login')
@@ -20,10 +21,21 @@ export class AmbulanceController {
     return this.ambulanceService.login(dto);
   }
 
+  /////
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAllAmbulances(@Req() req: ExpressRequest) {
-    const adminId = Number(req.user.id);
+  async getAllAmbulances(
+    @Query('adminId') adminId: number, 
+    @Req() req: ExpressRequest
+  ): Promise<AmbulanceDto[]> {
+    // Optional additional validation
+    if (!adminId) {
+      adminId = Number(req.user.id);
+    }
+
+    if (!adminId || isNaN(adminId)) {
+      throw new BadRequestException('Invalid admin ID');
+    }
     return this.ambulanceService.getAllAmbulances(adminId);
   }
 

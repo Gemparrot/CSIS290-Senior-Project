@@ -56,6 +56,12 @@ const missionService = {
     const response = await axios.delete<Mission>(`/missions/${id}`);
     return response.data;
   },
-};
+
+  // Add this method to your existing missionService
+  findAllForAmbulance: async (ambulanceId: number): Promise<Mission[]> => {
+    const response = await axios.get<Mission[]>(`/missions/ambulance/${ambulanceId}`);
+    return response.data;
+  },
+};  
 
 export default missionService;

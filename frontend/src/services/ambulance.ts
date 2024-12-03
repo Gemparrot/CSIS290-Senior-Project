@@ -22,6 +22,12 @@ const ambulanceService = {
   },
 
   register: async (registerPayload: AmbulanceRegisterPayload) => {
+    console.log("Payload before sending:", {
+      vehicle_number: registerPayload.vehicle_number,
+      password: registerPayload.password,
+      adminId: registerPayload.adminId
+    });
+
     const response = await axios.post('/ambulance/create', registerPayload);
     return response.data; 
   },
@@ -36,9 +42,9 @@ const ambulanceService = {
     return response.data;
   },
 
-  // Fetch all ambulances for the logged-in admin
-  getAllAmbulances: async () => {
-    const response = await axios.get('/ambulance');
+  //
+  getAllAmbulances: async (adminId: number) => {
+    const response = await axios.get(`/ambulance?adminId=${adminId}`);
     return response.data;
   },
 

@@ -17,18 +17,25 @@ const LoginPage: React.FC = () => {
       let response: { accessToken: string };
 
       const isEmail = /\S+@\S+\.\S+/.test(emailOrVehicleNumber);
-
+      console.log("Email", isEmail)
       if (isEmail) {
         // Admin login
         response = await adminService.login({ email: emailOrVehicleNumber, password }) as { accessToken: string };
+      console.log("admin token", response) //available
+      console.log('Admin Token:', response.accessToken); //absent
+         
       } else {
         // Ambulance login
         response = await ambulanceService.login({ vehicle_number: emailOrVehicleNumber, password }) as { accessToken: string };
-        console.log('Ambulance Response:', response);
+        console.log('Ambulance Response:', response); //available
+        console.log('Ambulance Token:', response.accessToken);
+
       }
 
        // Check if response has token
   if (response && response.accessToken) {
+    console.log("token exist", response)
+
     localStorage.setItem('token', response.accessToken);
     console.log('Token stored:', localStorage.getItem('token'));
 

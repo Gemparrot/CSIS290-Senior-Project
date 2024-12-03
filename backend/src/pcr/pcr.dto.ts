@@ -1,27 +1,40 @@
-import { IsNotEmpty, IsOptional, IsJSON } from 'class-validator';
+import { IsOptional, IsJSON, IsNumber } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+
 
 export class CreatePCRDto {
   @IsOptional()
   @IsJSON()
-  primary_assessment: Record<string, any>;
+  body_section?: any;
 
   @IsOptional()
   @IsJSON()
-  body_section: Record<string, any>;
+  vitals?: any;
 
   @IsOptional()
   @IsJSON()
-  vitals: Record<string, any>;
+  management?: any;
 
   @IsOptional()
   @IsJSON()
-  management: Record<string, any>;
+  clinical_info?: any;
 
   @IsOptional()
   @IsJSON()
-  clinical_info: Record<string, any>;
+  patient_details?: any;
 
   @IsOptional()
   @IsJSON()
-  patient_details: Record<string, any>;
+  primary_assessment?: any;
+
+  @IsOptional()
+  @IsNumber()
+  missionId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  patientId?: number;
 }
+
+
+export class UpdatePCRDto extends PartialType(CreatePCRDto) {}

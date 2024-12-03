@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ambulance } from './ambulance.entity';
 import { AmbulanceDto } from './ambulance.dto';
+import { RegisterAmbulanceDto } from './ambulance.dto';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
@@ -13,11 +14,11 @@ export class AmbulanceService {
     private readonly ambulanceRepository: Repository<Ambulance>
   ) {}
 
-  async createAmbulance(dto: AmbulanceDto, adminId: number): Promise<Ambulance> {
+  async createAmbulance(dto: RegisterAmbulanceDto): Promise<Ambulance> {
     const ambulance = new Ambulance();
     ambulance.vehicle_number = dto.vehicle_number;
     await ambulance.setPassword(dto.password);
-    ambulance.admin = { id: adminId } as Admin;
+    ambulance.admin = { id: dto.adminId } as Admin;
   
     return this.ambulanceRepository.save(ambulance);
   }

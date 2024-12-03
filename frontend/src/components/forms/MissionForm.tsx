@@ -59,8 +59,8 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-[425px] max-w-full">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
+      <div className="bg-white p-4 rounded-lg w-[425px] max-w-full max-h-[90vh] overflow-auto">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Add New Mission</h2>
           <button 
@@ -70,7 +70,7 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
             ×
           </button>
         </div>
-
+  
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -88,7 +88,7 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
               <option value="transportation">Transportation</option>
             </select>
           </div>
-
+  
           <div>
             <label className="block text-sm font-medium mb-1">
               Patient name
@@ -103,7 +103,7 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
               required
             />
           </div>
-
+  
           <div>
             <label className="block text-sm font-medium mb-1">
               Description
@@ -113,11 +113,11 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
               value={formData.description}
               onChange={handleChange}
               placeholder="Enter mission description"
-              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[80px]"
               required
             />
           </div>
-
+  
           <div>
             <label className="block text-sm font-medium mb-1">
               Address
@@ -132,7 +132,7 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
               required
             />
           </div>
-
+  
           <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"
@@ -153,6 +153,7 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
       </div>
     </div>
   );
+  
 };
 
 export default MissionForm;
