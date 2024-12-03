@@ -1,13 +1,23 @@
-// ../PCR/components/DynamicPCRForm.tsx
-import React, { useState } from 'react';
-import { FormSection } from '../types/FormConfig';
+import React, { useState, useEffect } from 'react';
+import { Question, QuestionGroup, FormSection } from '../types/FormConfig';
 import { renderFormInput } from './FormComponents';
-import { primaryAssessmentForm, bodyAssessmentForm } from '../data/PrimaryAssessment';
+
+// Import all form section configurations
+import { primaryAssessmentForm } from '../data/PrimaryAssessment';
+import { bodyAssessmentForm } from '../data/body';
+import { vitalsForm } from '../data/vitals';
+import { managementForm } from '../data/management';
+import { clinicalInfoForm } from '../data/clinical-info';
+import { patientDetailsForm } from '../data/patient-details';
 
 // Mapping of form sections
 const formSections: { [key: string]: FormSection } = {
   'primary-assessment': primaryAssessmentForm,
-  'body-assessment': bodyAssessmentForm
+  'body': bodyAssessmentForm,
+  'vitals': vitalsForm,
+  'management': managementForm,
+  'clinical-info': clinicalInfoForm,
+  'patient-details': patientDetailsForm
 };
 
 interface DynamicPCRFormProps {
@@ -23,6 +33,11 @@ const DynamicPCRForm: React.FC<DynamicPCRFormProps> = ({
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
+  // Update current section if initialSection changes
+  useEffect(() => {
+    setCurrentSection(initialSection);
+  }, [initialSection]);
+
   const currentForm = formSections[currentSection];
 
   const handleInputChange = (questionId: string, value: string) => {
@@ -34,37 +49,27 @@ const DynamicPCRForm: React.FC<DynamicPCRFormProps> = ({
 
   const validateSection = () => {
     const errors: string[] = [];
-    currentForm.questions.forEach(q => {
-      if (q.required && (!formData[q.id] || formData[q.id].trim() === '')) {
-        errors.push(`${q.title} is required`);
-      }
-    });
+    const validateQuestions = (questions: (Question | QuestionGroup)[]) => {
+      questions.forEach(q => {
+        if ('questions' in q) {
+          validateQuestions(q.questions);
+        } else {
+          if (q.required && (!formData[q.id] || formData[q.id].trim() === '')) {
+            errors.push(`${q.title} is required`);
+          }
+        }
+      });
+    };
+    validateQuestions(currentForm.questions);
     setValidationErrors(errors);
     return errors.length === 0;
   };
 
-  const navigateToNextSection = () => {
-    if (!validateSection()) return;
-
-    const sectionKeys = Object.keys(formSections);
-    const currentIndex = sectionKeys.indexOf(currentSection);
-    
-    if (currentIndex < sectionKeys.length - 1) {
-      setCurrentSection(sectionKeys[currentIndex + 1]);
-    } else {
-      // Last section - submit or handle completion
+  const handleSubmit = () => {
+    if (validateSection()) {
       if (onSubmit) {
         onSubmit(formData);
       }
-    }
-  };
-
-  const navigateToPreviousSection = () => {
-    const sectionKeys = Object.keys(formSections);
-    const currentIndex = sectionKeys.indexOf(currentSection);
-    
-    if (currentIndex > 0) {
-      setCurrentSection(sectionKeys[currentIndex - 1]);
     }
   };
 
@@ -83,35 +88,42 @@ const DynamicPCRForm: React.FC<DynamicPCRFormProps> = ({
       )}
 
       <form>
-        {currentForm.questions.map(question => (
-          <div key={question.id}>
-            {renderFormInput(
-              question, 
-              formData[question.id] || '', 
-              (value) => handleInputChange(question.id, value)
-            )}
-          </div>
-        ))}
+        {currentForm.questions.map(item => {
+          if ('questions' in item) {
+            return (
+              <div key={item.title} className="mb-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">{item.title}</h3>
+                {item.questions.map(question => (
+                  <div key={question.id} className="mb-4">
+                    {renderFormInput(
+                      question, 
+                      formData[question.id] || '', 
+                      (value) => handleInputChange(question.id, value)
+                    )}
+                  </div>
+                ))}
+              </div>
+            );
+          } else {
+            return (
+              <div key={item.id} className="mb-4">
+                {renderFormInput(
+                  item, 
+                  formData[item.id] || '', 
+                  (value) => handleInputChange(item.id, value)
+                )}
+              </div>
+            );
+          }
+        })}
 
         <div className="flex justify-between mt-6">
-          {currentSection !== Object.keys(formSections)[0] && (
-            <button 
-              type="button" 
-              onClick={navigateToPreviousSection}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-            >
-              Previous
-            </button>
-          )}
-          
           <button 
             type="button" 
-            onClick={navigateToNextSection}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-auto"
+            onClick={handleSubmit}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            {Object.keys(formSections)[Object.keys(formSections).length - 1] === currentSection 
-              ? 'Submit' 
-              : 'Next'}
+            Submit
           </button>
         </div>
       </form>

@@ -20,9 +20,12 @@ interface PCRSection {
 
 const PCRComponent: React.FC = () => {
   const { missionId } = useParams<{ missionId: string }>();
+
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+
 
   // PCR Sections Configuration
   const pcrSections: PCRSection[] = [
@@ -80,13 +83,20 @@ const PCRComponent: React.FC = () => {
     fetchPatients();
   }, [missionId]);
 
+  const handleSectionClick = (section: PCRSection) => {
+    setSelectedSection(section.id);
+    setIsFormVisible(true);
+  };
+
   const handleFormSubmit = (formData: { [key: string]: string }) => {
     // Handle form submission, e.g., save to backend
     console.log('Form submitted for patient:', selectedPatient);
     console.log('Form data:', formData);
+    console.log('Section:', selectedSection);
     // You can add API call here to save the PCR data
     setIsFormVisible(false);
-  }; 
+    setSelectedSection(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -113,13 +123,13 @@ const PCRComponent: React.FC = () => {
         </select>
       </div>
 
-      {/* PCR Sections Grid */}
+      {/* Form Sections Grid */}
       {selectedPatient && !isFormVisible && (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {pcrSections.map((section) => (
             <div 
               key={section.id}
-              onClick={() => setIsFormVisible(true)}
+              onClick={() => handleSectionClick(section)}
               className="cursor-pointer bg-white shadow rounded-lg p-4 flex flex-col items-center hover:bg-gray-50 transition-colors"
             >
               <img 
@@ -134,17 +144,20 @@ const PCRComponent: React.FC = () => {
       )}
 
       {/* Dynamic Form */}
-      {selectedPatient && isFormVisible && (
+      {selectedPatient && isFormVisible && selectedSection && (
         <div>
           <button 
-            onClick={() => setIsFormVisible(false)}
+            onClick={() => {
+              setIsFormVisible(false);
+              setSelectedSection(null);
+            }}
             className="mb-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
           >
             Back to Sections
           </button>
           <DynamicPCRForm 
             onSubmit={handleFormSubmit}
-            initialSection="primary-assessment"
+            initialSection={selectedSection}
           />
         </div>
       )}
