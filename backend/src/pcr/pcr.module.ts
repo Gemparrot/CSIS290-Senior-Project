@@ -5,9 +5,12 @@ import { Mission } from '../missions/missions.entity';
 import { MissionPatient } from '../mission-patient/mission-patient.entity'; 
 import { PCRService } from './pcr.service';
 import { PCRController } from './pcr.controller';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PCR, Mission, MissionPatient])],
+  imports: [TypeOrmModule.forFeature([PCR, Mission, MissionPatient]),
+  HttpModule,
+  ],
   providers: [PCRService],
   controllers: [PCRController],
 })

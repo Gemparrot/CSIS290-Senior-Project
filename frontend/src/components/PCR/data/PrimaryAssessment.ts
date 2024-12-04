@@ -8,14 +8,14 @@ export const primaryAssessmentForm: FormSection = {
       id: 'airway',
       title: "Airway",
       type: "radio",
-      options: ["Clear", "Obstructed", "Partially Obstructed", "unrecodable", "Missing"],
+      options: ["Clear", "Obstructed", "Partially Obstructed", "Unrecordable", "Missing"],
       required: true
     },
     {
       id: 'breathing',
       title: "Breathing",
       type: "radio",
-      options: ["Adequate", "Inadequate", "Unrecordable","Absent"],
+      options: ["Adequate", "Inadequate", "Unrecordable", "Absent"],
       required: true
     },
     {
@@ -76,16 +76,68 @@ export const primaryAssessmentForm: FormSection = {
           options: ["Cyanotic", "Flushed", "Normal", "Pale", "Unrecordable", "Missing"],
           required: false
         }
-      ]      
+      ]
     },
     {
       id: 'disability',
       title: "Disability",
       type: "radio",
       options: ["Alert", "Voice", "Pain", "Unresponsive", "Unrecordable", "Missing"],
+      required: true
+    },
+    {
+      id: 'age',
+      title: "Age",
+      type: "number",
       required: true,
-      min: 30,
-      max: 200
-    },    
+      min: 0
+    },
+    {
+      id: 'gender',
+      title: "Gender",
+      type: "radio",
+      options: ["Male", "Female", "Other"],
+      required: true
+    },
+    {
+      id: 'blood_pressure',
+      title: "Blood Pressure (mmHg)",
+      type: "number",
+      required: true,
+      min: 50,
+      max: 250
+    },
+    {
+      id: 'cholesterol',
+      title: "Cholesterol (mg/dL)",
+      type: "number",
+      required: true,
+      min: 100,
+      max: 400
+    },
+    {
+      id: 'max_heart_rate',
+      title: "Maximum Heart Rate (bpm)",
+      type: "number",
+      required: true,
+      min: 60,
+      max: 220
+    },
+    {
+      id: 'insulin',
+      title: "Insulin Level (μU/mL)",
+      type: "number",
+      required: true,
+      min: 0,
+      max: 50
+    },
+    {
+      id: 'bmi',
+      title: "Body Mass Index (BMI)",
+      type: "number",
+      required: true,
+      min: 10,
+      max: 50
+    }
   ]
 };

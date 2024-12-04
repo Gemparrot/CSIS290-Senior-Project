@@ -31,6 +31,9 @@ export class PCR {
   @Column({ type: 'json', nullable: true })
   primary_assessment: any;
 
+  @Column({ type: 'int', nullable: true })
+  triage?: number;
+
   @ManyToOne(() => Mission, (mission) => mission.id, { nullable: true })
   mission: Mission;
 
