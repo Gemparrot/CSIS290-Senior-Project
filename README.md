@@ -42,7 +42,7 @@ A web-based application designed to enhance the efficiency and accuracy of Red C
 ---
 
 ## **Installation**
-> **To Be Filled:** 
+> **To Be Filled** 
 
 ---
 
