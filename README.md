@@ -63,7 +63,8 @@ A web-based application designed to enhance the efficiency and accuracy of Red C
 ---
 
 ## **Screenshots**
-> **To Be Added:** 
+> ![Admin dashboard](https://github.com/user-attachments/assets/b0029e5b-d3fd-4699-83d5-8eb7913b3f7a)
+
 ---
 
 ## **Future Enhancements**
