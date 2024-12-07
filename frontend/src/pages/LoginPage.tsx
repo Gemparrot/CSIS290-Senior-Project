@@ -19,20 +19,17 @@ const LoginPage: React.FC = () => {
       const isEmail = /\S+@\S+\.\S+/.test(emailOrVehicleNumber);
       console.log("Email", isEmail)
       if (isEmail) {
-        // Admin login
         response = await adminService.login({ email: emailOrVehicleNumber, password }) as { accessToken: string };
-      console.log("admin token", response) //available
-      console.log('Admin Token:', response.accessToken); //absent
+        console.log("admin token", response) 
+        console.log('Admin Token:', response.accessToken); 
          
       } else {
-        // Ambulance login
         response = await ambulanceService.login({ vehicle_number: emailOrVehicleNumber, password }) as { accessToken: string };
-        console.log('Ambulance Response:', response); //available
+        console.log('Ambulance Response:', response); 
         console.log('Ambulance Token:', response.accessToken);
 
       }
 
-       // Check if response has token
   if (response && response.accessToken) {
     console.log("token exist", response)
 
@@ -48,7 +45,7 @@ const LoginPage: React.FC = () => {
     throw new Error('No token received from server');
   }
 } catch (err: any) {
-  console.error('Login error:', err); // Add this line
+  console.error('Login error:', err); 
   setError(err.response?.data?.message || 'Login failed');
 }
   };

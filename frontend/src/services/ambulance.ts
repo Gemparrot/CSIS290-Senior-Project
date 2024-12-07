@@ -1,7 +1,5 @@
 import axios from '../utils/axiosConfig';
 
-// Define the Ambulance API payloads
-
 interface AmbulanceLoginPayload {
   vehicle_number: string;
   password: string;
@@ -42,29 +40,25 @@ const ambulanceService = {
     return response.data;
   },
 
-  //
   getAllAmbulances: async (adminId: number) => {
     const response = await axios.get(`/ambulance?adminId=${adminId}`);
     return response.data;
   },
 
-  // Fetch an ambulance by its ID and associated admin ID
-getAmbulanceByAdminId: async (id: number, adminId: number) => {
-  const response = await axios.get(`/ambulance/${id}/admin/${adminId}`);
-  return response.data;
-},
+  getAmbulanceByAdminId: async (id: number, adminId: number) => {
+    const response = await axios.get(`/ambulance/${id}/admin/${adminId}`);
+    return response.data;
+  },
 
-// Update an ambulance's details
-updateAmbulance: async (id: string, updatePayload: Partial<AmbulanceRegisterPayload>) => {
-  const response = await axios.put(`/ambulance/${id}`, updatePayload);
-  return response.data;
-},
+  updateAmbulance: async (id: string, updatePayload: Partial<AmbulanceRegisterPayload>) => {
+    const response = await axios.put(`/ambulance/${id}`, updatePayload);
+    return response.data;
+  },
 
-// Delete an ambulance
-deleteAmbulance: async (id: string) => {
-  const response = await axios.delete(`/ambulance/${id}`);
-  return response.data;
-},
+  deleteAmbulance: async (id: string) => {
+    const response = await axios.delete(`/ambulance/${id}`);
+    return response.data;
+  },
 };
 
 

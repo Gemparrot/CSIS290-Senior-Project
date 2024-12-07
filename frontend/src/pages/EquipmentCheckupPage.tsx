@@ -7,17 +7,15 @@ const EquipmentCheckupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Fetch the equipment checkup record on mount
-  // Fetch the equipment checkup record on mount
+  
   useEffect(() => {
     const fetchCheckup = async () => {
       setIsLoading(true);
       try {
         const data = await equipmentCheckupService.findAll() as any[];
         if (data.length > 0) {
-          setCheckup(data[0]); // Use the first checkup if available
+          setCheckup(data[0]); 
         } else {
-          // Automatically create a new checkup if none exists
           const newCheckup = await equipmentCheckupService.createCheckup();
           setCheckup({ ...(newCheckup as object), equipmentStatus: 'unchecked' });
         }
@@ -31,7 +29,6 @@ const EquipmentCheckupPage: React.FC = () => {
     fetchCheckup();
   }, []);
 
-  // Handle checkbox toggle
   const handleToggleCheckup = async () => {
     if (!checkup) return;
 

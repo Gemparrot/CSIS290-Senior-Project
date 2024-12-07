@@ -6,7 +6,7 @@ import pandas as pd
 # Define the input schema
 class PredictionInput(BaseModel):
     age: int
-    gender: int  # Assume 0 for male, 1 for female
+    gender: int  
     blood_pressure: int
     cholesterol: int
     max_heart_rate: int
@@ -24,14 +24,11 @@ def home():
 
 @app.post("/predict/")
 def predict(input_data: PredictionInput):
-    # Log received input
     print("Received input data:", input_data)
 
-    # Convert input data to DataFrame
     data = pd.DataFrame([input_data.dict()])
     print("Data after conversion:", data)
 
-    # Rename columns to match the feature names used during training
     column_mapping = {
         "blood_pressure": "blood pressure",
         "max_heart_rate": "max heart rate"
@@ -39,7 +36,6 @@ def predict(input_data: PredictionInput):
     data = data.rename(columns=column_mapping)
     print("Data after renaming columns:", data)
 
-    # Ensure the model is being accessed
     try:
         prediction = model.predict(data)
     except Exception as e:

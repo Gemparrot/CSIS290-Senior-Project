@@ -9,7 +9,6 @@ interface Patient {
   patientName: string;
 }
 
-// Updated prop interface
 interface MissionProps {
   missionId: number;
   patients?: Patient[];

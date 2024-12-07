@@ -14,7 +14,6 @@ import { managementForm } from '../data/management';
 import { clinicalInfoForm } from '../data/clinical-info';
 import { patientDetailsForm } from '../data/patient-details';
 
-// Mapping of form sections
 const formSections: { [key: string]: FormSection } = {
   'primary-assessment': primaryAssessmentForm,
   'body': bodyAssessmentForm,
@@ -37,7 +36,6 @@ const DynamicPCRForm: React.FC<DynamicPCRFormProps> = ({
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
 
-  // Update current section if initialSection changes
   useEffect(() => {
     setCurrentSection(initialSection);
   }, [initialSection]);

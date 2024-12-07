@@ -7,7 +7,7 @@ import {
   ClipboardList, 
   ActivityIcon, 
   FileText,
-  LucideIcon // Import the type
+  LucideIcon 
 } from 'lucide-react';
 import missionPatientService from '../../services/mission-patient';
 import pcrService from '../../services/pcr';
@@ -21,7 +21,7 @@ interface Patient {
 interface PCRSection {
   id: string;
   title: string;
-  icon: LucideIcon; // Use LucideIcon type
+  icon: LucideIcon; 
   route: string;
 }
 
@@ -33,7 +33,6 @@ const PCRComponent: React.FC = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
 
-  // PCR Sections Configuration with Lucide Icons
   const pcrSections: PCRSection[] = [
     {
       id: 'primary-assessment',
@@ -93,11 +92,9 @@ const PCRComponent: React.FC = () => {
     if (!missionId) return;
 
     try {
-      // Check if PCR already exists
       const existingPCR = await pcrService.getPCRidByPatient(parseInt(missionId, 10), patientId);
 
       if (!existingPCR) {
-        // Create PCR only if it doesn't exist
         await pcrService.create(parseInt(missionId, 10), patientId, {
           primary_assessment: {},
           body_section: {},

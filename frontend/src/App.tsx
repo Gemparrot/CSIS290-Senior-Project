@@ -17,11 +17,6 @@ import AmbualnceMissions from './components/ManageAmbualnce/AmbualnceMissions';
 import MissionPCRs from './components/ManageAmbualnce/MissionPCRs';
 import PCRDetails from './components/ManageAmbualnce/ViewPCR';
 
-
-
-
-
-// Protected Route wrapper component
 const ProtectedRoute: React.FC<{ element: React.ReactElement }> = ({ element }) => {
   const isAuthenticated = !!localStorage.getItem('token');
   return isAuthenticated ? element : <Navigate to="/login" />;

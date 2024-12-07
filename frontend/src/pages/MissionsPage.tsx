@@ -6,26 +6,22 @@ import PCR from '../components/tabs/PCR';
 import TimestampComponent from '../components/tabs/TimeStamps'; 
 import missionPatientService from '../services/mission-patient';
 
-// Import the Patient type if not already imported
 interface Patient {
   id: number;
   missionId: number;
   patientName: string;
 }
 
-// Main MissionsPage component
 const MissionsPage = () => {
   const navigate = useNavigate();
-  const { missionId } = useParams<{ missionId: string }>(); // Get missionId from URL
+  const { missionId } = useParams<{ missionId: string }>(); 
   const [activeTab, setActiveTab] = useState<'team' | 'missions' | 'pcr' | 'timestamps'>('team');
   const headerRef = useRef<HTMLDivElement>(null);
 
-  // New state for patients
   const [patients, setPatients] = useState<Patient[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch mission patients
   const fetchMissionPatients = async () => {
     if (!missionId) return;
 
@@ -43,7 +39,6 @@ const MissionsPage = () => {
     }
   };
 
-  // Fetch patients when missionId changes
   useEffect(() => {
     fetchMissionPatients();
   }, [missionId]);

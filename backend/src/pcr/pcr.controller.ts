@@ -35,7 +35,6 @@ export class PCRController {
       throw new NotFoundException('Patient ID is required for PCR creation.');
     }
 
-    // Pass missionId, patientId, and createPCRDto to the service
     return this.pcrService.create(missionId, createPCRDto.patientId, createPCRDto);
   }
 
@@ -54,7 +53,6 @@ export class PCRController {
       throw new NotFoundException('Patient ID is required for PCR update.');
     }
 
-    // Pass id, missionId, patientId, and updatePCRDto to the service
     return this.pcrService.update(id, missionId, updatePCRDto.patientId, updatePCRDto);
   }
 

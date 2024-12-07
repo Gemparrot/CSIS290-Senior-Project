@@ -19,7 +19,6 @@ const AmbulanceDetails: React.FC = () => {
           throw new Error('No ambulance ID provided');
         }
 
-        // Directly fetch missions for this ambulance
         const missionsResponse = await missionService.findAllForAmbulance(Number(id));
         setMissions(missionsResponse);
         setIsLoading(false);

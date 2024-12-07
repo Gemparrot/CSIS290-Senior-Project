@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { List, ChevronRight, Clock, Clipboard, AlertTriangle  } from 'lucide-react';
 import pcrService from '../../services/pcr';
 
-// Triage color and label mapping
 const TRIAGE_COLORS = {
   0: { 
     color: 'bg-green-100 text-green-800 border-green-200', 
@@ -74,7 +73,6 @@ const AmbulancePCRs: React.FC = () => {
     fetchPCRs();
   }, [missionId]);
 
-// Render Triage Badge
 const renderTriageBadge = (triage?: number) => {
   if (triage === undefined || triage === null) return null;
   

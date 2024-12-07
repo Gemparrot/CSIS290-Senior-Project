@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface HeaderProps {
-  onNavigate: () => void; // Function to handle navigation
-  title?: string; // Optional title for the header
+  onNavigate: () => void; 
+  title?: string; 
 }
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, title = '' }) => {

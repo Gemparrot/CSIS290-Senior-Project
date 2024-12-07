@@ -18,7 +18,6 @@ const RegisterPage: React.FC = () => {
       navigate('/admin/dashboard');
     } catch (error) {
       console.error('Registration failed:', error);
-      // Handle registration error (e.g., show error message)
     }
   };
 

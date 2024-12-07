@@ -38,7 +38,7 @@ export class PCR {
   mission: Mission;
 
   @ManyToOne(() => MissionPatient, (patient) => patient.id, { nullable: true })
-  patient: MissionPatient; // Maps to patientId in the table
+  patient: MissionPatient;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
   created_at: Date;

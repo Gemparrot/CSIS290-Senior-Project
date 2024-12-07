@@ -35,17 +35,7 @@ const AdminDashboard: React.FC = () => {
       route: "/admin/manage-team-members",
       bgGradient: "from-green-500 to-green-700",
       hoverShadow: "hover:shadow-green-500/50",
-    },
-    {
-      id: 3,
-      title: "Emergency Alerts",
-      description: "Monitor and respond to critical incidents",
-      icon: Bell,
-      route: "/admin/emergency-alerts",
-      bgGradient: "from-red-500 to-red-700",
-      hoverShadow: "hover:shadow-red-500/50",
-    },
-    
+    },    
   ];
 
   return (

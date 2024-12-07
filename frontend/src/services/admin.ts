@@ -1,7 +1,5 @@
 import axios from '../utils/axiosConfig';
 
-// Define the Admin API payloads
-
 interface AdminLoginPayload {
   email: string;
   password: string;

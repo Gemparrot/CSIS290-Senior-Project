@@ -69,18 +69,16 @@ export class MissionService {
   }
 
   async findAllForAmbulance(ambulanceId: number): Promise<Mission[]> {
-    // Verify the ambulance exists first
     const ambulance = await this.ambulanceRepository.findOne({ where: { id: ambulanceId } });
     if (!ambulance) {
       throw new NotFoundException(`Ambulance with ID ${ambulanceId} not found`);
     }
   
-    // Find all missions for this ambulance, including completed and other statuses
     return await this.missionRepository.find({
       where: { ambulance: { id: ambulanceId } },
-      relations: ['ambulance'], // Include ambulance details
+      relations: ['ambulance'], 
       order: {
-        created_at: 'DESC' // Optional: order by most recent first
+        created_at: 'DESC'
       }
     });
   }

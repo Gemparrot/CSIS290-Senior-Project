@@ -23,14 +23,12 @@ const MissionForm: React.FC<MissionFormProps> = ({ isOpen, onClose }) => {
     setIsSubmitting(true);
     
     try {
-      // Create the mission first
       const mission = await missionService.create({
         mission_type: formData.mission_type as 'emergency' | 'transportation',
         description: formData.description,
         address: formData.address
       });
 
-      // Create the patient record with the returned mission ID
       await missionPatientService.create({
         missionId: mission.id,
         patientName: formData.patient_name

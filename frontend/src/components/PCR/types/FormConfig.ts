@@ -1,4 +1,3 @@
-// ../PCR/types/FormConfig.ts
 export type QuestionType = "radio" | "dropdown" | "text" | "number" | "yesno";
 
 export interface Question {

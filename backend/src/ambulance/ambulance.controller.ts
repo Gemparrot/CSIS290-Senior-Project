@@ -21,14 +21,12 @@ export class AmbulanceController {
     return this.ambulanceService.login(dto);
   }
 
-  /////
   @UseGuards(JwtAuthGuard)
   @Get()
   async getAllAmbulances(
     @Query('adminId') adminId: number, 
     @Req() req: ExpressRequest
   ): Promise<AmbulanceDto[]> {
-    // Optional additional validation
     if (!adminId) {
       adminId = Number(req.user.id);
     }
@@ -42,7 +40,7 @@ export class AmbulanceController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMyAmbulance(@Req() req): Promise<AmbulanceDto> {
-    const ambulanceId = req.user.sub; // Extract ambulance ID from JWT payload
+    const ambulanceId = req.user.sub; 
     return this.ambulanceService.getAmbulanceById(ambulanceId);
   }
 

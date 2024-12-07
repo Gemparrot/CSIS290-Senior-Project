@@ -1,5 +1,3 @@
-// src/timestamps/timestamps.service.ts
-
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -23,8 +21,7 @@ export class TimestampsService {
     const timestamp = new Timestamps();
     timestamp.mission = mission;
     timestamp.event = createTimestampDto.event;
-    timestamp.timestamp = new Date(); // Automatically set to current date and time
-
+    timestamp.timestamp = new Date(); 
     return this.timestampsRepository.save(timestamp);
   }
 

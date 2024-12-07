@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import teamMemberService from '../../services/team-memebers';
 import MissionTeamMember from '../forms/Mission-TeamMember';
-import Header from '../layout/Header';
 import SearchBar from '../forms/Search-Engine';
 import { useNavigate } from 'react-router-dom';
 

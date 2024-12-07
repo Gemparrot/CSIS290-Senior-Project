@@ -52,8 +52,7 @@ export class VehicleCheckupService {
     await this.vehicleCheckupRepository.remove(checkup);
   }
 
-  // Scheduled job to reset checkups to "unchecked" every 24 hours
-  @Cron('0 0 * * *') // This cron expression runs the job at midnight daily
+  @Cron('0 0 * * *') 
   async resetCheckupsDaily(): Promise<void> {
     await this.vehicleCheckupRepository.createQueryBuilder()
       .update(VehicleCheckup)

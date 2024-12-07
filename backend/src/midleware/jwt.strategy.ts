@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log("JWT Payload:", payload); // Confirm payload content here
+    console.log("JWT Payload:", payload); 
   
     if (payload.userType === 'ambulance') {
       return { id: payload.sub, vehicle_number: payload.vehicle_number, userType: payload.userType };

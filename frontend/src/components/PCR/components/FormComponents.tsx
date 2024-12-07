@@ -66,7 +66,6 @@ export const RadioGroup: React.FC<BaseInputProps> = ({ question, value, onChange
   );
 };
 
-// The rest of the code remains the same as in the original file
 export const Dropdown: React.FC<BaseInputProps> = ({ question, value, onChange }) => {
   return (
     <div className="mb-6">
@@ -104,7 +103,6 @@ export const Dropdown: React.FC<BaseInputProps> = ({ question, value, onChange }
   );
 };
 
-// Include other input components and renderFormInput function from the original file
 export const TextInput: React.FC<BaseInputProps> = ({ question, value, onChange }) => (
   <div className="mb-6">
     <label htmlFor={question.id} className="block text-lg font-semibold text-gray-800 mb-2">

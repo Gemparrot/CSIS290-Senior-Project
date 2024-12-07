@@ -29,7 +29,6 @@ const ManageAmbulance: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Decode token to extract admin ID
   const decodeToken = () => {
     const token = localStorage.getItem('token');
     if (!token) return null;
@@ -56,13 +55,11 @@ const ManageAmbulance: React.FC = () => {
     }
   };
 
-  // Initial adminId setup
   useEffect(() => {
     const id = decodeToken();
     setAdminId(id);
   }, []);
 
-  // Fetch ambulances when adminId changes
   useEffect(() => {
     if (adminId) {
       fetchAmbulances();
@@ -79,7 +76,7 @@ const ManageAmbulance: React.FC = () => {
         adminId,
       });
 
-      fetchAmbulances(); // Refresh the list
+      fetchAmbulances(); 
       setIsPopupOpen(false);
     } catch (error) {
       console.error('Error creating ambulance:', error);

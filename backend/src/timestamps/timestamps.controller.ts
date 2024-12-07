@@ -1,5 +1,3 @@
-// src/timestamps/timestamps.controller.ts
-
 import { Controller, Get, Post, Body, Param, ParseIntPipe, Req, UseGuards, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { TimestampsService } from './timestamps.service';
 import { CreateTimestampDto } from './timestamps.dto';
@@ -17,7 +15,6 @@ export class TimestampsController {
     @Body() createTimestampDto: CreateTimestampDto,
     @Req() req: ExpressRequest,
   ) {
-    // Check if the authenticated user has the ambulance userType
     if (req.user?.userType !== 'ambulance') {
       throw new UnauthorizedException('Access restricted to ambulance users.');
     }

@@ -7,17 +7,15 @@ const VehicleCheckupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Fetch the checkup record when the component mounts
-  // Fetch the checkup record when the component mounts
+  
   useEffect(() => {
     const fetchCheckup = async () => {
       setIsLoading(true);
       try {
         const data = await vehicleCheckupService.findAll() as any[];
         if (data.length > 0) {
-          setCheckup(data[0]); // Assuming one checkup is used at a time
+          setCheckup(data[0]);
         } else {
-          // Automatically create a checkup if none exists
           const newCheckup = await vehicleCheckupService.createCheckup();
           setCheckup(newCheckup);
         }
@@ -31,7 +29,6 @@ const VehicleCheckupPage: React.FC = () => {
     fetchCheckup();
   }, []);
 
-  // Handle checkbox toggle
   const handleToggleCheckup = async () => {
     if (!checkup) return;
 

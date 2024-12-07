@@ -23,7 +23,7 @@ const ManageTeamMembers: React.FC = () => {
     try {
       const data = await teamMemberService.findAll() as TeamMemberDto[];
       setTeamMembers(data);
-      setFilteredMembers(data); // Initialize filtered list
+      setFilteredMembers(data); 
       setError(null);
     } catch (err) {
       setError('Failed to load team members');
@@ -40,14 +40,13 @@ const ManageTeamMembers: React.FC = () => {
   const handleCreateTeamMember = async (name: string) => {
     try {
       await teamMemberService.create({ name });
-      fetchTeamMembers(); // Refresh the list
+      fetchTeamMembers(); 
       setIsPopupOpen(false);
     } catch (error) {
       console.error('Error creating team member:', error);
     }
   };
 
-  // Filter members based on the search query
   useEffect(() => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     const filtered = teamMembers.filter((member) =>
